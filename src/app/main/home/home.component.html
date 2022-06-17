@@ -90,11 +90,16 @@
                                 <div class="row">
                                     <p for="basicSelect">Ngôn ngữ</p>
                                     <div class="col-5 the-end-content">
-                                        <select class="form-control form-control-sm" id="selectSmall">
-                                            <option value="1">
+                                        <select
+                                                class="form-control form-control-sm"
+                                                id="selectSmall"
+                                                [(ngModel)]="lang"
+                                                (change)="changLang($event)"
+                                        >
+                                            <option value="vi">
                                                 <i class="flag-icon flag-icon-vi"></i> Tiếng Việt
                                             </option>
-                                            <option value="2">
+                                            <option value="en">
                                                 <i class="flag-icon flag-icon-us"></i> Tiếng Anh
                                             </option>
                                         </select>
@@ -187,9 +192,18 @@
 
                             <div class="form-group custom-control ">
                                 <div class="row">
-                                    <label for="basic-range">Độ sáng của đèn</label>
+                                    <label for="basic-range">Độ sáng của đèn: {{brightness}}</label>
                                     <div class="col-5 the-end-content">
-                                        <input type="range" class="form-control-range" id="basic-range"/>
+                                        <input
+                                                type="range"
+                                                class="form-control-range"
+                                                id="basic-range"
+                                                [(ngModel)]="brightness"
+                                                [min]="10"
+                                                [max]="50"
+                                                [step]="0.05"
+                                                (ngModelChange)="changBrightness($event)"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -208,12 +222,21 @@
                             </div>
 
                             <div class="form-group custom-control ">
-                            <div class="row">
-                                <label for="basic-range2">Âm lượng</label>
-                                <div class="col-5 the-end-content" >
-                                    <input type="range" class="form-control-range" id="basic-range2"/>
+                                <div class="row">
+                                    <label for="basic-range2">Âm lượng: {{volume}}</label>
+                                    <div class="col-5 the-end-content">
+                                        <input
+                                                type="range"
+                                                class="form-control-range"
+                                                id="basic-range2"
+                                                [(ngModel)]="volume"
+                                                [min]="10"
+                                                [max]="250"
+                                                [step]="0.05"
+                                                (ngModelChange)="changVolume($event)"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
                             </div>
 
 
@@ -303,17 +326,25 @@
                             <div class="form-group custom-control">
                                 <div class="row">
                                     <p>Thời gian giữ của </p>
-                                    <core-touchspin [size]="'sm'"></core-touchspin>
+                                    <core-touchspin
+                                            [numberValue]="this.timeHoldDoor"
+                                            [size]="'sm'"
+                                            (onChange)="changeTimeHoldDoor($event)"
+                                    ></core-touchspin>
                                     <p>(mili giây)</p>
                                 </div>
                             </div>
 
-
                             <div class="form-group custom-control">
                                 <div class="row">
                                     <p>Khoảng cách nhận diện (20-100cm)</p>
-                                    <core-touchspin [numberValue]="20" [size]="'sm'" [minValue]="20"
-                                                    [maxValue]="100"></core-touchspin>
+                                    <core-touchspin
+                                            (onChange)="changeDistance(modalForm, $event)"
+                                            [numberValue]="this.distance"
+                                            [size]="'sm'"
+                                            [minValue]="20"
+                                            [maxValue]="100"
+                                    ></core-touchspin>
                                     <p>(cm)</p>
                                 </div>
                             </div>
@@ -322,7 +353,11 @@
                             <div class="form-group custom-control">
                                 <div class="row">
                                     <p>Ngưỡng nhiệt độ cảnh báo </p>
-                                    <core-touchspin [size]="'sm'"></core-touchspin>
+                                    <core-touchspin
+                                            [size]="'sm'"
+                                            [numberValue]="this.limitTemp"
+                                            (onChange)="changeLimitTemp($event)"
+                                    ></core-touchspin>
                                     <p>(độ C)</p>
                                 </div>
                             </div>
@@ -330,14 +365,22 @@
                             <div class="form-group custom-control">
                                 <div class="row">
                                     <p>Số ngày lưu trữ bản ghi nhận diện offline </p>
-                                    <core-touchspin [size]="'sm'"></core-touchspin>
+                                    <core-touchspin
+                                            [size]="'sm'"
+                                            [numberValue]="this.daySaveOffline"
+                                            (onChange)="changeDaySaveOffline($event)"
+                                    ></core-touchspin>
                                 </div>
                             </div>
 
                             <div class="form-group custom-control">
                                 <div class="row">
                                     <p>Không nhận dạng cùng một người trong </p>
-                                    <core-touchspin [size]="'sm'"></core-touchspin>
+                                    <core-touchspin
+                                            [size]="'sm'"
+                                            [numberValue]="this.timeNoDetect"
+                                            (onChange)="changeTimeNoDetect($event)"
+                                    ></core-touchspin>
                                     <p>(mili giây)</p>
                                 </div>
                             </div>
@@ -349,6 +392,10 @@
                 </div>
             </div>
         </section>
+
+        <ng-template #modalForm>
+            <app-dialog [data]='notify'></app-dialog>
+        </ng-template>
         <!-- Basic Alerts end -->
     </div>
 </div>

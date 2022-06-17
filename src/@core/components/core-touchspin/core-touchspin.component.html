@@ -22,7 +22,7 @@
     [step]="stepValue"
     [min]="minValue"
     [max]="maxValue"
-    (input)="inputChange($event.target)"
+    (input)="inputChange($event.target.value)"
     pattern="\d*"
     maxlength="4"
   />

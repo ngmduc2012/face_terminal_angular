@@ -6,12 +6,15 @@ import {CoreCommonModule} from '@core/common.module';
 import {ContentHeaderModule} from 'app/layout/components/content-header/content-header.module';
 
 import {HomeComponent} from './home.component';
-import {CoreTouchspinModule} from "../../../@core/components/core-touchspin/core-touchspin.module";
-import {NgbDropdownModule} from "@ng-bootstrap/ng-bootstrap";
+// import {CoreTouchspinModule} from "../../../@core/components/core-touchspin/core-touchspin.module";
+import {NgbDropdownModule, NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {NgSelectModule} from "@ng-select/ng-select";
 import {NouisliderModule} from "ng2-nouislider";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
+import { DialogComponent } from './dialog/dialog.component';
+import {CardSnippetModule} from "../../../@core/components/card-snippet/card-snippet.module";
+import {CoreTouchspinModule} from "../../../@core/components/core-touchspin/core-touchspin.module";
 
 
 const routes = [
@@ -26,23 +29,28 @@ const routes = [
 ];
 
 @NgModule({
-    declarations: [ HomeComponent,
+    declarations: [ HomeComponent, DialogComponent,
 
     ],
     imports: [RouterModule.forChild(routes),
         ContentHeaderModule,
         TranslateModule,
         CoreCommonModule,
-        CoreTouchspinModule,
+        // CoreTouchspinModule,
         NgbDropdownModule,
         NgSelectModule,
         NouisliderModule,
         CommonModule,
         FormsModule,
 
+        NgbModule,
+        ContentHeaderModule,
+        CardSnippetModule,
+        CoreTouchspinModule,
+
+
     ],
     exports: [ HomeComponent,
-
     ]
 })
 export class HomeModule {
