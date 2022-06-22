@@ -7,389 +7,510 @@
         <section id="home-page">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Thông tin hiển thị khi nhận dạng</h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : cpu.data.CPU}}%</h2>
+                                        <p class="card-text">CPU Usage</p>
+                                    </div>
+                                    <div class="avatar bg-light-primary p-50 m-0">
+                                        <div class="avatar-content">
+                                            <i data-feather="cpu" class="font-medium-5"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body pb-1">
-
-                            <div class=" form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch1"
-                                            [(ngModel)]="isCompanyTag"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch1">Nhãn công ty</label>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.memory.memAvailable / cpu.data.memory.memTotal * 100).toFixed(2)}}
+                                            % {{cpu == null ? 0 : cpu.data.memory.memTotal / 1024 / 1024}}G</h2>
+                                        <p class="card-text">Memory Usage</p>
+                                    </div>
+                                    <div class="avatar bg-light-success p-50 m-0">
+                                        <div class="avatar-content">
+                                            <i data-feather="server" class="font-medium-5"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class=" form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch2"
-                                            [(ngModel)]="isShowingCompanyName"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch2">Tên công ty</label>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h2 class="font-weight-bolder mb-0">
+                                            {{ receive3Ago == 0 ? 0 : receive.toFixed(2)}}
+                                            <span [data-feather]="'arrow-down'"></span>
+                                            {{transmit3Ago == 0 ? 0 : transmit.toFixed(2)}}
+                                            <span [data-feather]="'arrow-up'"></span>
+                                        </h2>
+                                        <p class="card-text">Downtime Ratio (kb/s)</p>
+                                    </div>
+                                    <div class="avatar bg-light-danger p-50 m-0">
+                                        <div class="avatar-content">
+                                            <i data-feather="activity" class="font-medium-5"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class=" form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch3"
-                                            [(ngModel)]="isShowingInfoTimekeeping"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch3">Thông tin chấm công</label>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.disk.availableBytes / cpu.data.disk.totalBytes * 100).toFixed(2)}}
+                                            % {{cpu == null ? 0 : cpu.data.disk.totalBytes / 1024 / 1024 / 1024}}Gb</h2>
+                                        <p class="card-text">Disk</p>
+                                    </div>
+                                    <div class="avatar bg-light-warning p-50 m-0">
+                                        <div class="avatar-content">
+                                            <i data-feather="package" class="font-medium-5"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class=" form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch4"
-                                            [(ngModel)]="isShowingInfoOpen"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch4">Thông tin mở cửa</label>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Cài đặt phần mềm</h4>
-                        </div>
-                        <div class="card-body pb-1">
-
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input type="checkbox"
-                                           class="custom-control-input"
-                                           id="customSwitch5"
-                                           [(ngModel)]="isCheckingModule"
-                                           (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch5">Chế độ nhận diện</label>
-                                </div>
+                    <form class="form form-vertical" [formGroup]="formGroup">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Thông tin hiển thị khi nhận dạng</h4>
                             </div>
+                            <div class="card-body pb-1">
 
-                            <!-- Basic Select -->
-                            <div class="form-group custom-control ">
-                                <div class="row">
-                                    <p for="basicSelect">Ngôn ngữ</p>
-                                    <div class="col-5 the-end-content">
-                                        <select
-                                                class="form-control form-control-sm"
-                                                id="selectSmall"
-                                                [(ngModel)]="lang"
-                                                (change)="changLang($event)"
-                                        >
-                                            <option value="vi">
-                                                <i class="flag-icon flag-icon-vi"></i> Tiếng Việt
-                                            </option>
-                                            <option value="en">
-                                                <i class="flag-icon flag-icon-us"></i> Tiếng Anh
-                                            </option>
-                                        </select>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch7"
-                                            [(ngModel)]="isAntiFakeByRGB"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch7">Phát hiện giả mạo
-                                        RGB</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch8"
-                                            [(ngModel)]="isAntiFakeByIR"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch8">Phát hiện giả mạo IR</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch9"
-                                            [(ngModel)]="isAntiFaceFake"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch9">Chế độ nghiêm ngặt chống giả
-                                        mạo khuôn mặt</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch10"
-                                            [(ngModel)]="isShowIRCamera"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch10">Hiển thị camera IR</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch11"
-                                            [(ngModel)]="isIncreaseQuality"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch11">Tăng chất lượng ảnh nhận
-                                        diện</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch12"
-                                            [(ngModel)]="isUsingLED"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch12">Sử dụng đèn Led</label>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group custom-control ">
-                                <div class="row">
-                                    <label for="basic-range">Độ sáng của đèn: {{brightness}}</label>
-                                    <div class="col-5 the-end-content">
+                                <div class=" form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
                                         <input
-                                                type="range"
-                                                class="form-control-range"
-                                                id="basic-range"
-                                                [(ngModel)]="brightness"
-                                                [min]="10"
-                                                [max]="50"
-                                                [step]="0.05"
-                                                (ngModelChange)="changBrightness($event)"
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch1"
+                                                formControlName="isCompanyTag"
                                         />
+                                        <label class="custom-control-label" for="customSwitch1">Nhãn công ty</label>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch14"
-                                            [(ngModel)]="isUsingVolume"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch14">Sử dụng loa</label>
-                                </div>
-                            </div>
-
-                            <div class="form-group custom-control ">
-                                <div class="row">
-                                    <label for="basic-range2">Âm lượng: {{volume}}</label>
-                                    <div class="col-5 the-end-content">
+                                <div class=" form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
                                         <input
-                                                type="range"
-                                                class="form-control-range"
-                                                id="basic-range2"
-                                                [(ngModel)]="volume"
-                                                [min]="10"
-                                                [max]="250"
-                                                [step]="0.05"
-                                                (ngModelChange)="changVolume($event)"
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch2"
+                                                formControlName="isShowingCompanyName"
                                         />
+                                        <label class="custom-control-label" for="customSwitch2">Tên công ty</label>
                                     </div>
                                 </div>
-                            </div>
 
-
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch16"
-                                            [(ngModel)]="isAutoStart"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch16">Tự động bật chương
-                                        tình</label>
+                                <div class=" form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch3"
+                                                formControlName="isShowingInfoTimekeeping"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch3">Thông tin chấm
+                                            công</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch17"
-                                            [(ngModel)]="isAutoRestartAfterCrash"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch17">Tự khởi động lại khi ứng
-                                        dụng bị crash</label>
+                                <div class=" form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch4"
+                                                formControlName="isShowingInfoOpen"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch4">Thông tin mở cửa</label>
+                                    </div>
                                 </div>
+
                             </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Cài đặt phần mềm</h4>
+                            </div>
+                            <div class="card-body pb-1">
 
+                                <!-- Basic Select -->
+                                <div class="form-group custom-control ">
+                                    <div class="row">
+                                        <p for="basicSelect">Chế độ nhận diện</p>
+                                        <div class="col-5 the-end-content">
+                                            <select
+                                                    class="form-control form-control-sm"
+                                                    formControlName="checkingModule"
+                                                    (change)="changCheckingModule($event)"
+                                            >
+                                                <option value="0">
+                                                    <i class="flag-icon "></i> Online
+                                                </option>
+                                                <option value="1">
+                                                    <i class="flag-icon "></i> Offline
+                                                </option>
+                                                <option value="2">
+                                                    <i class="flag-icon "></i> Online + Offline
+                                                </option>
+                                                <option value="3">
+                                                    <i class="flag-icon "></i> Onl Fallback Offline
+                                                </option>
+                                            </select>
 
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch18"
-                                            [(ngModel)]="isCheckingFaceMask"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch18">Kiểm tra khẩu trang</label>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch19"
-                                            [(ngModel)]="isCheckingTemperature"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch19">Kiểm tra nhiệt độ</label>
+                                <!-- Basic Select -->
+                                <div class="form-group custom-control ">
+                                    <div class="row">
+                                        <p for="basicSelect">Ngôn ngữ</p>
+                                        <div class="col-5 the-end-content">
+                                            <select
+                                                    class="form-control form-control-sm"
+                                                    id="selectSmall"
+                                                    formControlName="lang"
+                                            >
+                                                <option value="vi">
+                                                    <i class="flag-icon flag-icon-vi"></i> Tiếng Việt
+                                                </option>
+                                                <option value="en">
+                                                    <i class="flag-icon flag-icon-us"></i> Tiếng Anh
+                                                </option>
+                                                <option value="jp">
+                                                    <i class="flag-icon flag-icon-jp"></i> Tiếng Nhật
+                                                </option>
+                                            </select>
+
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch20"
-                                            [(ngModel)]="isCheckingTemperatureOnFace"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch20">Chỉ kiểm tra nhiệt độ trên
-                                        mặt người</label>
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch7"
+                                                formControlName="isAntiFakeByRGB"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch7">Phát hiện giả mạo
+                                            RGB</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group custom-control custom-switch custom-switch-success ">
-                                <div class="custom-control custom-switch custom-control-inline">
-                                    <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="customSwitch21"
-                                            [(ngModel)]="isDebug"
-                                            (change)="showValue()"
-                                    />
-                                    <label class="custom-control-label" for="customSwitch21">Chế độ gỡ lỗi</label>
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch8"
+                                                formControlName="isAntiFakeByIR"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch8">Phát hiện giả mạo
+                                            IR</label>
+                                    </div>
                                 </div>
-                            </div>
 
-
-                            <div class="form-group custom-control">
-                                <div class="row">
-                                    <p>Thời gian giữ của </p>
-                                    <core-touchspin
-                                            [numberValue]="this.timeHoldDoor"
-                                            [size]="'sm'"
-                                            (onChange)="changeTimeHoldDoor($event)"
-                                    ></core-touchspin>
-                                    <p>(mili giây)</p>
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch9"
+                                                formControlName="isAntiFaceFake"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch9">Chế độ nghiêm ngặt chống
+                                            giả
+                                            mạo khuôn mặt</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group custom-control">
-                                <div class="row">
-                                    <p>Khoảng cách nhận diện (20-100cm)</p>
-                                    <core-touchspin
-                                            (onChange)="changeDistance(modalForm, $event)"
-                                            [numberValue]="this.distance"
-                                            [size]="'sm'"
-                                            [minValue]="20"
-                                            [maxValue]="100"
-                                    ></core-touchspin>
-                                    <p>(cm)</p>
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch10"
+                                                formControlName="isShowIRCamera"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch10">Hiển thị camera
+                                            IR</label>
+                                    </div>
                                 </div>
-                            </div>
 
-
-                            <div class="form-group custom-control">
-                                <div class="row">
-                                    <p>Ngưỡng nhiệt độ cảnh báo </p>
-                                    <core-touchspin
-                                            [size]="'sm'"
-                                            [numberValue]="this.limitTemp"
-                                            (onChange)="changeLimitTemp($event)"
-                                    ></core-touchspin>
-                                    <p>(độ C)</p>
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch11"
+                                                formControlName="isIncreaseQuality"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch11">Tăng chất lượng ảnh
+                                            nhận
+                                            diện</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group custom-control">
-                                <div class="row">
-                                    <p>Số ngày lưu trữ bản ghi nhận diện offline </p>
-                                    <core-touchspin
-                                            [size]="'sm'"
-                                            [numberValue]="this.daySaveOffline"
-                                            (onChange)="changeDaySaveOffline($event)"
-                                    ></core-touchspin>
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch12"
+                                                formControlName="isUsingLED"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch12">Sử dụng đèn Led</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group custom-control">
-                                <div class="row">
-                                    <p>Không nhận dạng cùng một người trong </p>
-                                    <core-touchspin
-                                            [size]="'sm'"
-                                            [numberValue]="this.timeNoDetect"
-                                            (onChange)="changeTimeNoDetect($event)"
-                                    ></core-touchspin>
-                                    <p>(mili giây)</p>
+
+                                <div class="form-group custom-control ">
+                                    <div class="row">
+                                        <label for="basic-range">Độ sáng của đèn: {{brightness}}</label>
+                                        <div class="col-5 the-end-content">
+                                            <input
+                                                    type="range"
+                                                    class="form-control-range"
+                                                    id="basic-range"
+                                                    formControlName="brightness"
+                                                    [min]="0"
+                                                    [max]="255"
+                                                    [step]="1"
+                                                    (ngModelChange)="changBrightness()"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch14"
+                                                formControlName="isUsingVolume"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch14">Sử dụng loa</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group custom-control ">
+                                    <div class="row">
+                                        <label for="basic-range2">Âm lượng: {{volume}}</label>
+                                        <div class="col-5 the-end-content">
+                                            <input
+                                                    type="range"
+                                                    class="form-control-range"
+                                                    id="basic-range2"
+                                                    formControlName="volume"
+                                                    [min]="0"
+                                                    [max]="15"
+                                                    [step]="1"
+                                                    (ngModelChange)="changVolume()"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch16"
+                                                formControlName="isAutoStart"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch16">Tự động bật chương
+                                            tình</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch17"
+                                                formControlName="isAutoRestartAfterCrash"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch17">Tự khởi động lại khi
+                                            ứng
+                                            dụng bị crash</label>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch18"
+                                                formControlName="isCheckingFaceMask"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch18">Kiểm tra khẩu
+                                            trang</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch19"
+                                                formControlName="isCheckingTemperature"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch19">Kiểm tra nhiệt
+                                            độ</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch20"
+                                                formControlName="isCheckingTemperatureOnFace"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch20">Chỉ kiểm tra nhiệt độ
+                                            trên
+                                            mặt người</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group custom-control custom-switch custom-switch-success ">
+                                    <div class="custom-control custom-switch custom-control-inline">
+                                        <input
+                                                type="checkbox"
+                                                class="custom-control-input"
+                                                id="customSwitch21"
+                                                formControlName="isDebug"
+                                        />
+                                        <label class="custom-control-label" for="customSwitch21">Chế độ gỡ lỗi</label>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group custom-control">
+                                    <div class="row">
+                                        <label class="col-form-label" for="timeHoldDoor">Thời gian giữ cửa (mili
+                                            giây) </label>
+                                        <div class="column the-end-content" id="timeHoldDoor">
+                                            <input
+                                                    type="number"
+                                                    [ngClass]="{'is-invalid': !isTrueTimeHoldDoor,
+                                          'is-valid': isTrueTimeHoldDoor,
+                                          'form-control' : true}"
+                                                    placeholder="(mili giây)"
+                                                    formControlName="timeHoldDoor"
+                                                    (change)="checkValueTimeHoldDoor()"
+                                            />
+                                            <div class="invalid-feedback">{{notifyTimeHoldDoor}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-control"></div>
+
+
+                                <div class="form-group custom-control">
+                                    <div class="row">
+                                        <label class="col-form-label" for="distance">Khoảng cách nhận diện (20-100cm) </label>
+                                        <div class="column the-end-content" id="distance">
+                                            <input
+                                                    type="number"
+                                                    [ngClass]="{'is-invalid': !isTrueDistance,
+                                          'is-valid': isTrueDistance,
+                                          'form-control' : true}"
+                                                    placeholder="(cm)"
+                                                    formControlName="distance"
+                                                    (change)="checkValueDistance()"
+                                            />
+                                            <div class="invalid-feedback">{{notifyDistance}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-control"></div>
+
+
+                                <div class="form-group custom-control">
+                                    <div class="row">
+                                        <label class="col-form-label" for="limitTemp">Ngưỡng nhiệt độ cảnh báo (độ C)</label>
+                                        <div class="column the-end-content" id="limitTemp">
+                                            <input
+                                                    type="number"
+                                                    [ngClass]="{'is-invalid': !isLimitTemp,
+                                          'is-valid': isLimitTemp,
+                                          'form-control' : true}"
+                                                    placeholder="(độ C)"
+                                                    formControlName="limitTemp"
+                                                    (change)="checkValueLimitTemp()"
+                                            />
+                                            <div class="invalid-feedback">{{notifyLimitTemp}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-control"></div>
+
+
+                                <div class="form-group custom-control">
+                                    <div class="row">
+                                        <label class="col-form-label" for="limitTemp">Số ngày lưu trữ bản ghi nhận diện offline </label>
+                                        <div class="column the-end-content" id="daySaveOffline">
+                                            <input
+                                                    type="number"
+                                                    [ngClass]="{'is-invalid': !isDaySaveOffline,
+                                          'is-valid': isDaySaveOffline,
+                                          'form-control' : true}"
+                                                    placeholder="(ngày)"
+                                                    formControlName="daySaveOffline"
+                                                    (change)="checkValueDaySaveOffline()"
+                                            />
+                                            <div class="invalid-feedback">{{notifyDaySaveOffline}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-control"></div>
+
+
+                                <div class="form-group custom-control">
+                                    <div class="row">
+                                        <label class="col-form-label" for="limitTemp">Không nhận dạng cùng một người trong (mili giây)</label>
+                                        <div class="column the-end-content" id="timeNoDetect">
+                                            <input
+                                                    type="number"
+                                                    [ngClass]="{'is-invalid': !isTimeNoDetect,
+                                          'is-valid': isTimeNoDetect,
+                                          'form-control' : true}"
+                                                    placeholder="(mili giây)"
+                                                    formControlName="timeNoDetect"
+                                                    (change)="checkValueTimeNoDetect()"
+                                            />
+                                            <div class="invalid-feedback">{{notifyTimeNoDetect}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-control"></div>
+
+                            </div>
 
                         </div>
-                    </div>
+                    </form>
+
 
                 </div>
+
             </div>
         </section>
 
@@ -398,4 +519,16 @@
         </ng-template>
         <!-- Basic Alerts end -->
     </div>
+
+</div>
+
+<!-- Move to top Button-->
+<!--<app-scroll-top *ngIf="coreConfig.layout.scrollTop"></app-scroll-top>-->
+
+<!-- Buynow Button-->
+<div class="buy-now">
+    <button (click)="sendMsg()" class="btn btn-danger"
+    >Save
+    </button
+    >
 </div>

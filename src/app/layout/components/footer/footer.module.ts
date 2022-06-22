@@ -9,6 +9,6 @@ import { ScrollTopComponent } from 'app/layout/components/footer/scroll-to-top/s
 @NgModule({
   declarations: [FooterComponent, ScrollTopComponent],
   imports: [RouterModule, CoreCommonModule],
-  exports: [FooterComponent]
+  exports: [FooterComponent, ScrollTopComponent, ScrollTopComponent]
 })
 export class FooterModule {}

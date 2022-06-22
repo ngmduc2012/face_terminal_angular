@@ -15,6 +15,8 @@ import {FormsModule} from "@angular/forms";
 import { DialogComponent } from './dialog/dialog.component';
 import {CardSnippetModule} from "../../../@core/components/card-snippet/card-snippet.module";
 import {CoreTouchspinModule} from "../../../@core/components/core-touchspin/core-touchspin.module";
+import {FooterModule} from "../../layout/components/footer/footer.module";
+// import {WebsocketService} from "./services/websocket.service";
 
 
 const routes = [
@@ -46,7 +48,7 @@ const routes = [
         NgbModule,
         ContentHeaderModule,
         CardSnippetModule,
-        CoreTouchspinModule,
+        CoreTouchspinModule, FooterModule,
 
 
     ],
