@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewEncapsulation,} from '@angular/core'
 import {CoreConfigService} from "../../../@core/services/config.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {WebsocketService} from "./services/websocket.service";
+import {HomeService} from "./services/home.service";
 import {ConvertCPU, CPU} from "./modules/CPU";
 import {ConvertFailure, Failure} from "./modules/Failure";
 import {ConvertMQTT, Mqtt} from "./modules/mqtt";
@@ -15,7 +15,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    providers: [WebsocketService,]
+    providers: [HomeService,]
 })
 export class HomeComponent implements OnInit {
 
@@ -23,12 +23,12 @@ export class HomeComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private WebsocketService: WebsocketService,
+        private homeService: HomeService,
         private modal: NgbModal,
         private _coreConfigService: CoreConfigService,
     ) {
         try {
-            WebsocketService.messages.subscribe(msg => {
+            homeService.messages.subscribe(msg => {
                 console.log("Response from websocket: " + msg);
                 this.getMessage(msg)
             });
@@ -69,6 +69,7 @@ export class HomeComponent implements OnInit {
 
     }
 
+    // Hiển thị các thông tin về CPU
     public cpu: CPU
     public failure: Failure
     public mqtt: Mqtt
@@ -117,10 +118,6 @@ export class HomeComponent implements OnInit {
     public isShowingInfoOpen: boolean;
     // Chế độ nhận diện
     public checkingModule: String;
-
-    changCheckingModule(event) {
-        this.showValue()
-    }
 
     //Phát hiện giả mạo RGB
     public isAntiFakeByRGB: boolean;
@@ -396,6 +393,7 @@ export class HomeComponent implements OnInit {
         }
     }
 
+    // xử lý các thông tin của CPU: tính tốc độ mạng
     public receive3Ago: number = 0
     public transmit3Ago: number = 0
     public receive: number = 0
@@ -447,7 +445,7 @@ export class HomeComponent implements OnInit {
         //         "volume": 5.0
         //     }
         // }
-        // this.WebsocketService.messages.next(JSON.parse(JSON.stringify(message)));
+        // this.HomeService.messages.next(JSON.parse(JSON.stringify(message)));
 
         // message.source = 'localhost';
         // message.content = this.content;
@@ -541,7 +539,7 @@ export class HomeComponent implements OnInit {
         this.setting.data.useLed = this.formGroup.value.isUsingLED
         this.setting.data.volume = this.formGroup.value.volume
 
-        this.WebsocketService.messages.next(JSON.parse(ConvertSetting.settingToJson(this.setting)));
+        this.homeService.messages.next(JSON.parse(ConvertSetting.settingToJson(this.setting)));
 
     }
 

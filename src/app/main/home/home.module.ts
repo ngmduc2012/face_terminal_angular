@@ -16,7 +16,7 @@ import { DialogComponent } from './dialog/dialog.component';
 import {CardSnippetModule} from "../../../@core/components/card-snippet/card-snippet.module";
 import {CoreTouchspinModule} from "../../../@core/components/core-touchspin/core-touchspin.module";
 import {FooterModule} from "../../layout/components/footer/footer.module";
-// import {WebsocketService} from "./services/websocket.service";
+// import {HomeService} from "./services/websocket.service";
 
 
 const routes = [

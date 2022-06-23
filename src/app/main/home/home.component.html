@@ -27,8 +27,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div>
-                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.memory.memAvailable / cpu.data.memory.memTotal * 100).toFixed(2)}}
-                                            % {{cpu == null ? 0 : cpu.data.memory.memTotal / 1024 / 1024}}G</h2>
+                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.memory.memAvailable / cpu.data.memory.memTotal * 100).toFixed(2)}}% {{cpu == null ? 0 : cpu.data.memory.memTotal / 1024 / 1024}}G</h2>
                                         <p class="card-text">Memory Usage</p>
                                     </div>
                                     <div class="avatar bg-light-success p-50 m-0">
@@ -63,8 +62,7 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div>
-                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.disk.availableBytes / cpu.data.disk.totalBytes * 100).toFixed(2)}}
-                                            % {{cpu == null ? 0 : cpu.data.disk.totalBytes / 1024 / 1024 / 1024}}Gb</h2>
+                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.disk.availableBytes / cpu.data.disk.totalBytes * 100).toFixed(2)}}% {{cpu == null ? 0 : cpu.data.disk.totalBytes / 1024 / 1024 / 1024}}Gb</h2>
                                         <p class="card-text">Disk</p>
                                     </div>
                                     <div class="avatar bg-light-warning p-50 m-0">
@@ -148,7 +146,6 @@
                                             <select
                                                     class="form-control form-control-sm"
                                                     formControlName="checkingModule"
-                                                    (change)="changCheckingModule($event)"
                                             >
                                                 <option value="0">
                                                     <i class="flag-icon "></i> Online
@@ -515,7 +512,7 @@
         </section>
 
         <ng-template #modalForm>
-            <app-dialog [data]='notify'></app-dialog>
+            <app-dialog [data]=''></app-dialog>
         </ng-template>
         <!-- Basic Alerts end -->
     </div>

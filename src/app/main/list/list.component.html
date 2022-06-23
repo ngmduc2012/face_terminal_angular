@@ -1,0 +1,330 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+        <!-- content-header component -->
+        <app-content-header [contentHeader]="contentHeader"></app-content-header>
+
+        <section *ngIf="isHasResult">
+            <div class="row" id="basic-table">
+                <div class="col-12">
+                    <div class="card">
+                        <!--        Tên tiêu đề của bảng-->
+<!--                        <div class="card-header">-->
+<!--                            <h4 class="card-title">Danh sách người dùng</h4>-->
+<!--                        </div>-->
+
+                        <div class="card-body">
+                            <!--        Hiển thi loading khi cơ sở dữ liệu đang load-->
+                            <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+                            <!-- Invoice List Header -->
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="d-flex justify-content-between align-items-center m-1">
+                                        <div class="d-flex align-items-center">
+                                            <h4 class="card-title">Danh sách người dùng</h4> </div>
+                                    </div>
+                                </div>
+                                <div
+                                        class="col-md-6  col-12 justify-content-md-end d-flex align-items-center"
+                                >
+                                    <div class="row ">
+                                        <label class="d-flex align-items-center"
+                                        >Show
+                                            <select
+                                                    class="form-control mx-25"
+                                                    [(ngModel)]="this.itemOnPage"
+                                                    [value]="this.itemOnPage"
+                                                    (change)="getAllOfList(page)"
+                                            >
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </label>
+                                        <form class="form form-vertical" [formGroup]="formSearch">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <button class="btn btn-outline-primary" type="button" rippleEffect>
+                                                            <i data-feather="search"></i>
+                                                        </button>
+                                                    </div>
+                                                    <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            placeholder="Button on both side"
+                                                            formControlName="search"
+                                                            aria-label="Amount" />
+                                                    <div class="input-group-append">
+                                                        <button
+                                                                class="btn btn-outline-primary"
+                                                                type="button"
+                                                                [disabled]="!formSearch.valid" (click)="search()"
+                                                                rippleEffect>Search !</button>
+                                                    </div>
+                                                </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                TRuyền dữ liệu vào bảng-->
+                            <ngx-datatable #tableRowDetails
+                                           class="bootstrap core-bootstrap"
+                                           [rows]="rowsData"
+                                           [selected]="chkBoxSelected"
+                                           (select)="customCheckboxOnSelect($event)"
+                                           (select)="onSelect($event)"
+                                           [selectionType]="SelectionType.checkbox"
+                                           [columnMode]="ColumnMode.force"
+                                           [headerHeight]="50"
+                                           rowHeight="auto"
+                                           [scrollbarH]="false"
+                                           [footerHeight]="50"
+                                           [rowHeight]="50"
+                                           [externalPaging]="true"
+                                           [limit]="pagedData.size"
+                                           [count]="pagedData.totalItems"
+                                           [offset]="pagedData.currentPage"
+                                           [loadingIndicator]="isLoading"
+                                           (page)="getAllOfList($event.offset)">
+                                <!--                                Tạo bảng cơ sở dữ liệu với các thống số và có thể lựa chọn các phần tử-->
+                                <!--                                Tạo kích thước mặc định của cột trong bảng -->
+                                <ngx-datatable-column
+                                        [width]="50"
+                                        [sortable]="false"
+                                        [canAutoResize]="false"
+                                        [draggable]="false"
+                                        [resizeable]="false"
+                                        class="ml-1">
+
+                                    <!--                Tạo một tiêu đề cho bảng, cho phép lựa chọn tất cả các hàng trong bảng-->
+                                    <ng-template
+                                            ngx-datatable-header-template
+                                            let-value="value"
+                                            let-allRowsSelected="allRowsSelected"
+                                            let-selectFn="selectFn">
+                                        <!--                    Tạo check box ở hàng tiêu đề của bảng, để lấy toàn bộ dữ liệu của bảng -->
+                                        <div class="custom-control custom-control-primary custom-checkbox">
+                                            <!--                        Khi ấn , sẽ lấy toàn bộ và khi ấn lần 2 sẽ hủy lấy toàn bộ các hàng được chọn-->
+                                            <input
+                                                    type="checkbox"
+                                                    class="custom-control-input"
+                                                    [checked]="allRowsSelected"
+                                                    (change)="selectFn(!allRowsSelected)"
+                                                    id="headerCustomChkbxRef"/>
+                                            <!--label là tiêu đề cho checkbox.  VD [x] chọn tên.  chọn tên là label của checkbox [x]-->
+                                            <label
+                                                    class="custom-control-label"
+                                                    for="headerCustomChkbxRef"></label>
+                                        </div>
+                                    </ng-template>
+
+                                    <!--                Tạo chủ đề cho việc chọn từng dòng trong bảng-->
+                                    <ng-template
+                                            ngx-datatable-cell-template
+                                            let-rowIndex="rowIndex"
+                                            let-value="value"
+                                            let-isSelected="isSelected"
+                                            let-onCheckboxChangeFn="onCheckboxChangeFn">
+                                        <!--                    Tạo thẻ div với định dạng checkbox-->
+                                        <div class="custom-control custom-control-primary custom-checkbox">
+                                            <!--                        Tạo checkbox có thể chọn và không chọn với từng hàng của bảng -->
+                                            <input type="checkbox"
+                                                   class="custom-control-input"
+                                                   [checked]="isSelected"
+                                                   (change)="onCheckboxChangeFn($event)"
+                                                   id="rowCustomChkbxRef{{ rowIndex }}"/>
+                                            <!--                        tiêu đề cho checkbox được tạo cho từng hàng tương ứng-->
+                                            <label class="custom-control-label"
+                                                   for="rowCustomChkbxRef{{ rowIndex }}"></label>
+                                        </div>
+                                    </ng-template>
+                                    <!--                Tạo cột cho bảng dữ liệu-->
+                                </ngx-datatable-column>
+                                <!--            Tạo cột mã yêu cầu với độ rộng 200-->
+                                <ngx-datatable-column
+                                        name="Người dùng"
+                                        prop="name"
+                                        [width]="250">
+                                    <ng-template let-row="row" let-name="value" ngx-datatable-cell-template>
+                                        <div class="d-flex align-items-center">
+                                            <div *ngIf="row.avatar.length > 0; else customAvatar">
+<!--                                                <img-->
+<!--                                                        class="rounded-circle mr-1"-->
+<!--                                                        src="{{ row.avatar }}"-->
+<!--                                                        height="32"-->
+<!--                                                        width="32"-->
+<!--                                                        alt="datatable-avatar"-->
+<!--                                                />-->
+                                                <img
+                                                        class="rounded-circle mr-1"
+                                                        src="data:image/jpg;base64,{{row.avatar}}"
+                                                        style="width: 32px;height:32px;"
+                                                        alt="datatable-avatar" />
+
+                                            </div>
+                                            <ng-template #customAvatar>
+                                                <div
+                                                        class="avatar mr-1 ml-0"
+                                                        [ngClass]="{
+
+                      'bg-light-success': row.activeStatus == 'ACTIVE',
+                      'bg-light-danger': row.activeStatus == 'DEACTIVATE'
+                    }"
+                                                >
+                                                    <div class="avatar-content">{{ name | initials }}</div>
+                                                </div>
+                                            </ng-template>
+                                            <div class="cell-line-height">
+                                                <span class="font-weight-bold d-block text-nowrap font-medium-1">{{ name }}</span>
+                                                <span class="text-muted font-small-2">{{ row.email }}</span>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+
+                                </ngx-datatable-column>
+                                <ngx-datatable-column
+                                        name="Công ty"
+                                        prop="companyName"
+                                >
+                                    <ng-template ngx-datatable-cell-template let-value="value">
+                                        <div class="datatable-body-cell-label">{{value}}</div>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column
+                                        name="Bộ phận"
+                                        prop="departmentName"
+                                >
+                                    <ng-template ngx-datatable-cell-template let-value="value">
+                                        <div class="datatable-body-cell-label">{{value}}</div>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column
+                                        name="Ngày sinh"
+                                        prop="birthday"
+                                >
+                                    <ng-template ngx-datatable-cell-template let-value="value">
+                                        <div class="datatable-body-cell-label">{{value  | date: "dd/MM/YYYY" }}</div>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                                <ngx-datatable-column
+                                        name="Trạng thái"
+                                        prop="activeStatus"
+                                        [width]="100"
+                                >
+                                    <ng-template
+                                        let-row="row"
+                                        let-invoiceStatus="value" ngx-datatable-cell-template>
+                                        <!-- <a class="font-weight-bold">{{ invoiceStatus }}</a> -->
+                                        <div
+                                                class="avatar avatar-status"
+                                                [ngClass]="{
+                                                      'bg-light-success': row.activeStatus == 'ACTIVE',
+                                                      'bg-light-danger': row.activeStatus == 'DEACTIVATE'
+                                                    }"
+                                        >
+                                        </div>
+                                        <span class="avatar-content" placement="top"  container="body">
+                                          <i
+                                                  class="feather avatar-icon font-medium-1"
+                                                  [ngClass]="{
+                                              'icon-check-circle': row.activeStatus == 'ACTIVE',
+                                              'icon-info': row.activeStatus == 'DEACTIVATE'
+                                            }"
+                                          ></i
+                                          ></span>
+                                    </ng-template>
+
+                                </ngx-datatable-column>
+                                <!--            Tạo cột hành động, dùng để thêm các thao tác trong hàng-->
+                                <ngx-datatable-column name="Hành động" [width]="100" [sortable]="false">
+                                    <ng-template ngx-datatable-cell-template let-row="row">
+                                        <div class="d-flex align-items-center col-actions">
+
+                                            <a
+                                                    class="mr-1"
+                                                    (click)="detail(modalForm, row)"
+                                                    container="body"
+                                                    placement="top"
+                                                    ngbTooltip="Preview Invoice"
+                                            ><i size="18" data-feather="eye"></i
+                                            ></a>
+                                            <!--                                    Phê duyệt chứng chỉ-->
+                                            <div ngbDropdown container="body">
+                                                <button ngbDropdownToggle type="button" class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                    <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                                                </button>
+
+                                                <div ngbDropdownMenu class="dropdown-menu-right"
+                                                     aria-labelledby="dropdownBrowserState">
+
+                                                    <!--                                Xem chi tiết chứng chỉ -->
+                                                    <a href="javascript:void(0)"
+                                                       ngbDropdownItem class="d-flex align-items-center"
+                                                       (click)="edit(modalForm, row)">
+                                                        <i data-feather="edit-3" class="mr-50"></i> Sửa</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <!--            Phần chân của bảng-->
+                                <ngx-datatable-footer>
+                                    <!--                Phần chân bảng sẽ hiện số lượng hàng, số lượng trang, trang hiện tại -->
+                                    <ng-template
+                                            ngx-datatable-footer-template
+                                            let-rowCount="rowCount"
+                                            let-pageSize="pageSize"
+                                            let-selectedCount="selectedCount"
+                                            let-curPage="curPage"
+                                            let-offset="offset"
+                                            let-isVisible="isVisible">
+                                        <!--                    Hiển thị khi dữ liệu đã được load xong -->
+                                        <div class="page-count" *ngIf="!isLoading">
+                                            <!--                        Hiển thị số lượng đã chọn với số lượng hàng hiện tại -->
+                                            <span *ngIf="chkBoxSelected">
+                                    Đã chọn {{ chkBoxSelected.length }} /
+                                    </span>
+                                                                                        {{ rowCount.toLocaleString() }} {{ totalPages }} hàng.
+                                        </div>
+
+                                        <!--                    Hiển thị trang hiện tại, các trang kế tiếp, nút chuyển hướng trái phải-->
+                                        <datatable-pager [pagerLeftArrowIcon]="'datatable-icon-left'"
+                                                         [pagerRightArrowIcon]="'datatable-icon-right'"
+                                                         [pagerPreviousIcon]="'datatable-icon-prev'"
+                                                         [pagerNextIcon]="'datatable-icon-skip'"
+                                                         [page]="curPage"
+                                                         [size]="pageSize"
+                                                         [count]="rowCount"
+                                                         [hidden]="!(rowCount / pageSize > 1)"
+                                                         (change)="table.onFooterPage($event)">
+                                        </datatable-pager>
+<!--                                                                        <ngb-pagination-->
+<!--                                                                                [(collectionSize)]="pagedData.totalItems"-->
+<!--                                                                                [(page)]="pagedData.currentPage"-->
+<!--                                                                                [maxSize]="pagedData.size"-->
+<!--                                                                                [rotate]="true"-->
+<!--                                                                                [boundaryLinks]="true"-->
+<!--                                                                                (pageChange)="table.onFooterPage($event)"-->
+<!--                                                                                class="d-flex justify-content-end mr-1">-->
+<!--                                                                            <ng-template ngbPaginationFirst><<</ng-template>-->
+<!--                                                                            <ng-template ngbPaginationLast>>></ng-template>-->
+<!--                                                                        </ngb-pagination>-->
+                                    </ng-template>
+                                </ngx-datatable-footer>
+                            </ngx-datatable>
+                        </div>
+
+                    </div>
+                    <ng-template #modalForm let-modal>
+                        <!--                        <app-subscriber-certificate-view [data]='detailC'></app-subscriber-certificate-view>-->
+                    </ng-template>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</div>
+

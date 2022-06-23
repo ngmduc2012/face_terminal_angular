@@ -1,26 +1,17 @@
-// src\app\services\websocket.service.ts
+// src\app\services\home.service.ts
 import {Injectable} from "@angular/core";
 import {Observable, Observer} from 'rxjs';
 import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {Subject} from 'rxjs';
 import {map} from 'rxjs/operators';
+import {environment} from "../../../../environments/environment";
 
-// const subject = webSocket('ws://192.168.1.166:8080/socket');
-const CHAT_URL = "ws://192.168.1.166:8080/socket";
-// subject.next('first');
-//
-// subject.subscribe(
-//     msg => console.log('message received: ' + msg), // Called whenever there is a message from the server.
-//     err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-//     () => console.log('complete') // Called when connection is closed (for whatever reason).
-// );
-// export interface Message {
-//     source: string;
-//     content: string;
-// }
+const CHAT_URL = `${environment.ws}/socket`;
 
 @Injectable()
-export class WebsocketService {
+export class HomeService {
+
+    // I. websocket:
     private subject: AnonymousSubject<MessageEvent>;
     public messages: Subject<JSON>;
 
@@ -29,9 +20,7 @@ export class WebsocketService {
         this.messages = <Subject<JSON>>this.connect(CHAT_URL).pipe(
             map(
                 (response): JSON => {
-                    console.log("11 - messagesResult")
                     console.log(response.data)
-                    console.log("12 - messagesResult")
                     let data = JSON.parse(response.data)
                     return data;
                 }
@@ -45,12 +34,10 @@ export class WebsocketService {
             this.subject = this.create(url);
             // console.log("Successfully connected: " + url);
         }
-        console.log("12 " + this.subject)
         return this.subject;
     }
 
     private create(url): AnonymousSubject<MessageEvent> {
-        console.log("13")
         let ws = new WebSocket(url);
         let observable = new Observable((obs: Observer<MessageEvent>) => {
             ws.onmessage = obs.next.bind(obs);
@@ -68,7 +55,6 @@ export class WebsocketService {
                 }
             }
         };
-        console.log("14")
         return new AnonymousSubject<MessageEvent>(observer, observable);
     }
 }

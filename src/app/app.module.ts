@@ -18,6 +18,8 @@ import { coreConfig } from 'app/app-config';
 import { AppComponent } from 'app/app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { HomeModule } from 'app/main/home/home.module';
+import { ListComponent } from './main/list/list.component';
+import {ListModule} from "./main/list/list.module";
 
 const appRoutes: Routes = [
   {
@@ -59,7 +61,8 @@ const appRoutes: Routes = [
 
     // App modules
     LayoutModule,
-    HomeModule
+    HomeModule,
+    ListModule,
   ],
 
   bootstrap: [AppComponent]

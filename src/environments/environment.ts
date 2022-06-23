@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   hmr: false,
-  apiUrl: 'http://localhost:4000'
+  apiUrl: 'http://192.168.1.166:8080',
+  ws: 'ws://192.168.1.166:8080',
 };
 
 /*
