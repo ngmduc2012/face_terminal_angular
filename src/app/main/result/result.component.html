@@ -90,8 +90,14 @@
                                        id="endTime"
                                        type="datetime-local"
                                        formControlName="timeOptionsEnd"
+                                       name="endTimeName"
                                        placeholder="01/02/2023"
-                                       mask="00/00/0000" />
+                                       mask="00/00/0000"
+                                />
+                                <div *ngIf="endTimeNameNotify"
+                                     class="form-text text-muted danger">
+                                    <small>Thời gian nhập vào phải lớn hơn thời gian bắt đầu. </small>
+                                </div>
 <!--                                    </div>-->
 <!--                            </div>-->
                         </div>

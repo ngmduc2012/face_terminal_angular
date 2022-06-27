@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import {ListService} from "../list/services/list.service";
 import {ToastrService} from "ngx-toastr";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
@@ -144,6 +144,7 @@ export class ResultComponent implements OnInit {
 
     public startTime = 0
     public endTime = 0
+    endTimeNameNotify = false
 
     search() {
         console.log(this.formSearch.value.search)
@@ -191,7 +192,12 @@ export class ResultComponent implements OnInit {
         console.log("startTime: " + this.startTime)
         console.log("endTime: " + this.endTime)
 
-        this.getAllOfResult(this.page)
+        if(this.startTime>this.endTime){
+            this.endTimeNameNotify = true
+        } else {
+            this.endTimeNameNotify = false
+            this.getAllOfResult(this.page)
+        }
     }
 
 
