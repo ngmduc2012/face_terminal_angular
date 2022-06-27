@@ -6,6 +6,7 @@ export const locale = {
     MENU: {
       HOME: 'Zuhause',
       LIST: 'List',
+      RESULT: 'Result',
     }
   }
 }
