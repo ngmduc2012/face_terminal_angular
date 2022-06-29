@@ -449,6 +449,14 @@ export class HomeComponent implements OnInit {
 
         // message.source = 'localhost';
         // message.content = this.content;
+        console.log("isTimeNoDetect: " + !this.isTimeNoDetect)
+        console.log("isDaySaveOffline: " + !this.isDaySaveOffline)
+        console.log("isLimitTemp: " + !this.isLimitTemp)
+        console.log("isTrueDistance: " + !this.isTrueDistance)
+        console.log("isTrueTimeHoldDoor: " + !this.isTrueTimeHoldDoor)
+        if(!this.isTimeNoDetect || !this.isDaySaveOffline || !this.isLimitTemp || !this.isTrueDistance || !this.isTrueTimeHoldDoor) {
+            return
+        }
         this.setting = {
             "method": "setSettings",
             "data": {

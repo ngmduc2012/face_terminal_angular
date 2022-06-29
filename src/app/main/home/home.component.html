@@ -27,7 +27,8 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div>
-                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.memory.memAvailable / cpu.data.memory.memTotal * 100).toFixed(2)}}% {{cpu == null ? 0 : cpu.data.memory.memTotal / 1024 / 1024}}G</h2>
+                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.memory.memAvailable / cpu.data.memory.memTotal * 100).toFixed(2)}}
+                                            % {{cpu == null ? 0 : cpu.data.memory.memTotal / 1024 / 1024}}G</h2>
                                         <p class="card-text">Memory Usage</p>
                                     </div>
                                     <div class="avatar bg-light-success p-50 m-0">
@@ -62,7 +63,8 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div>
-                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.disk.availableBytes / cpu.data.disk.totalBytes * 100).toFixed(2)}}% {{cpu == null ? 0 : cpu.data.disk.totalBytes / 1024 / 1024 / 1024}}Gb</h2>
+                                        <h2 class="font-weight-bolder mb-0">{{cpu == null ? 0 : (cpu.data.disk.availableBytes / cpu.data.disk.totalBytes * 100).toFixed(2)}}
+                                            % {{cpu == null ? 0 : cpu.data.disk.totalBytes / 1024 / 1024 / 1024}}Gb</h2>
                                         <p class="card-text">Disk</p>
                                     </div>
                                     <div class="avatar bg-light-warning p-50 m-0">
@@ -402,9 +404,10 @@
 
                                 <div class="form-group custom-control">
                                     <div class="row">
-                                        <label class="col-form-label" for="timeHoldDoor">Thời gian giữ cửa (mili
+                                        <label class="col-md-6 col-12 col-form-label" for="timeHoldDoor">Thời gian giữ cửa (mili
                                             giây) </label>
-                                        <div class="column the-end-content" id="timeHoldDoor">
+                                        <div class="col-md-6 col-12 d-flex justify-content-start justify-content-md-end" id="timeHoldDoor">
+                                            <div class=" column">
                                             <input
                                                     type="number"
                                                     [ngClass]="{'is-invalid': !isTrueTimeHoldDoor,
@@ -415,16 +418,16 @@
                                                     (change)="checkValueTimeHoldDoor()"
                                             />
                                             <div class="invalid-feedback">{{notifyTimeHoldDoor}}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-control"></div>
-
-
                                 <div class="form-group custom-control">
                                     <div class="row">
-                                        <label class="col-form-label" for="distance">Khoảng cách nhận diện (20-100cm) </label>
-                                        <div class="column the-end-content" id="distance">
+                                        <label class=" col-md-6 col-12 col-form-label" for="distance">Khoảng cách nhận diện
+                                            (20-100cm) </label>
+                                        <div class="col-md-6 col-12 d-flex justify-content-start justify-content-md-end" id="distance">
+                                            <div class=" column">
                                             <input
                                                     type="number"
                                                     [ngClass]="{'is-invalid': !isTrueDistance,
@@ -435,16 +438,18 @@
                                                     (change)="checkValueDistance()"
                                             />
                                             <div class="invalid-feedback">{{notifyDistance}}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-control"></div>
 
 
                                 <div class="form-group custom-control">
                                     <div class="row">
-                                        <label class="col-form-label" for="limitTemp">Ngưỡng nhiệt độ cảnh báo (độ C)</label>
-                                        <div class="column the-end-content" id="limitTemp">
+                                        <label class="col-md-6 col-12 col-form-label" for="limitTemp">Ngưỡng nhiệt độ cảnh báo (độ
+                                            C)</label>
+                                        <div class=" col-md-6 col-12 d-flex justify-content-start justify-content-md-end" id="limitTemp">
+                                            <div class=" column">
                                             <input
                                                     type="number"
                                                     [ngClass]="{'is-invalid': !isLimitTemp,
@@ -455,50 +460,58 @@
                                                     (change)="checkValueLimitTemp()"
                                             />
                                             <div class="invalid-feedback">{{notifyLimitTemp}}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-control"></div>
-
 
                                 <div class="form-group custom-control">
                                     <div class="row">
-                                        <label class="col-form-label" for="limitTemp">Số ngày lưu trữ bản ghi nhận diện offline </label>
-                                        <div class="column the-end-content" id="daySaveOffline">
-                                            <input
-                                                    type="number"
-                                                    [ngClass]="{'is-invalid': !isDaySaveOffline,
+                                        <label class="col-md-6 col-12 col-form-label" for="limitTemp">Số ngày lưu trữ bản ghi nhận diện
+                                            offline </label>
+                                        <div class="col-md-6 col-12 d-flex justify-content-start justify-content-md-end"
+                                             id="daySaveOffline">
+                                            <div class=" column">
+                                                <input
+                                                        class="d-flex align-items-center ml-1 ml-md-0"
+                                                        type="number"
+                                                        [ngClass]="{'is-invalid': !isDaySaveOffline,
                                           'is-valid': isDaySaveOffline,
                                           'form-control' : true}"
-                                                    placeholder="(ngày)"
-                                                    formControlName="daySaveOffline"
-                                                    (change)="checkValueDaySaveOffline()"
-                                            />
-                                            <div class="invalid-feedback">{{notifyDaySaveOffline}}</div>
+                                                        placeholder="(ngày)"
+                                                        formControlName="daySaveOffline"
+                                                        (change)="checkValueDaySaveOffline()"
+                                                />
+                                                <div class="invalid-feedback">{{notifyDaySaveOffline}}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-control"></div>
 
 
                                 <div class="form-group custom-control">
                                     <div class="row">
-                                        <label class="col-form-label" for="limitTemp">Không nhận dạng cùng một người trong (mili giây)</label>
-                                        <div class="column the-end-content" id="timeNoDetect">
-                                            <input
-                                                    type="number"
-                                                    [ngClass]="{'is-invalid': !isTimeNoDetect,
-                                          'is-valid': isTimeNoDetect,
-                                          'form-control' : true}"
-                                                    placeholder="(mili giây)"
-                                                    formControlName="timeNoDetect"
-                                                    (change)="checkValueTimeNoDetect()"
-                                            />
-                                            <div class="invalid-feedback">{{notifyTimeNoDetect}}</div>
+                                        <label class="col-md-6 col-12 col-form-label">
+                                            Không nhận dạng cùng một người trong (mili giây)
+                                        </label>
+                                        <div class="col-md-6 col-12 d-flex justify-content-start justify-content-md-end"
+                                             id="timeNoDetect">
+                                            <div class="column">
+                                                <input
+                                                        class="d-flex align-items-center ml-1 ml-md-0"
+                                                        type="number"
+                                                        [ngClass]="{'is-invalid': !isTimeNoDetect,
+                                                                      'is-valid': isTimeNoDetect,
+                                                                      'form-control' : true}"
+                                                        placeholder="(mili giây)"
+                                                        formControlName="timeNoDetect"
+                                                        (change)="checkValueTimeNoDetect()"
+                                                />
+                                                <div class="invalid-feedback">{{notifyTimeNoDetect}}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="custom-control"></div>
 
                             </div>
 

@@ -80,8 +80,6 @@ export class ResultService {
           this.option
       )
     }
-
-
   }
 
   // II. websocket:

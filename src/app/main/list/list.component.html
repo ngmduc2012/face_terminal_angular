@@ -3,38 +3,26 @@
         <!-- content-header component -->
         <app-content-header [contentHeader]="contentHeader"></app-content-header>
 
-        <section *ngIf="isHasResult">
-            <div class="row" id="basic-table">
-                <div class="col-12">
+        <section *ngIf="isHasResult" class="users-list-wrapper">
                     <div class="card">
-                        <!--        Tên tiêu đề của bảng-->
-<!--                        <div class="card-header">-->
-<!--                            <h4 class="card-title">Danh sách người dùng</h4>-->
-<!--                        </div>-->
-
-                        <div class="card-body">
                             <!--        Hiển thi loading khi cơ sở dữ liệu đang load-->
                             <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
                             <!-- Invoice List Header -->
                             <div class="row">
-                                <div class="col-md-6 col-12">
+                                <div class="col-md-6 col-12 align-items-center">
                                     <div class="d-flex justify-content-between align-items-center m-1">
                                         <div class="d-flex align-items-center">
                                             <h4 class="card-title">Danh sách người dùng</h4> </div>
                                     </div>
                                 </div>
-                                <div
-                                        class="col-md-6  col-12 justify-content-md-end d-flex align-items-center"
-                                >
-                                    <div class="row ">
-                                        <label class="d-flex align-items-center"
-                                        >Show
+                                <div class="col-md-6  col-12 justify-content-md-end d-flex align-items-center">
+                                    <div class="d-flex align-items-center justify-content-end pr-1 pb-1 pb-md-0">
+                                        <label class="d-flex align-items-center">
                                             <select
                                                     class="form-control mx-25"
                                                     [(ngModel)]="this.itemOnPage"
                                                     [value]="this.itemOnPage"
-                                                    (change)="getAllOfList(page)"
-                                            >
+                                                    (change)="getAllOfList(page)">
                                                 <option value="10">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
@@ -67,6 +55,7 @@
                                 </div>
                             </div>
                             <!--                TRuyền dữ liệu vào bảng-->
+<!--                        [scrollbarH]="true"  biến này dùng để hiện thị trên điện thoại, có thể kéo bảng sang ngang-->
                             <ngx-datatable #tableRowDetails
                                            class="bootstrap core-bootstrap"
                                            [rows]="rowsData"
@@ -77,7 +66,7 @@
                                            [columnMode]="ColumnMode.force"
                                            [headerHeight]="50"
                                            rowHeight="auto"
-                                           [scrollbarH]="false"
+                                           [scrollbarH]="true"
                                            [footerHeight]="50"
                                            [rowHeight]="50"
                                            [externalPaging]="true"
@@ -168,7 +157,7 @@
                                                         [ngClass]="{
 
                       'bg-light-success': row.activeStatus == 'ACTIVE',
-                      'bg-light-danger': row.activeStatus == 'DEACTIVATE'
+                      'bg-light-danger': row.activeStatus == 'INACTIVE'
                     }"
                                                 >
                                                     <div class="avatar-content">{{ name | initials }}</div>
@@ -219,7 +208,7 @@
                                                 class="avatar avatar-status"
                                                 [ngClass]="{
                                                       'bg-light-success': row.activeStatus == 'ACTIVE',
-                                                      'bg-light-danger': row.activeStatus == 'DEACTIVATE'
+                                                      'bg-light-danger': row.activeStatus == 'INACTIVE'
                                                     }"
                                         >
                                         </div>
@@ -228,7 +217,7 @@
                                                   class="feather avatar-icon font-medium-1"
                                                   [ngClass]="{
                                               'icon-check-circle': row.activeStatus == 'ACTIVE',
-                                              'icon-info': row.activeStatus == 'DEACTIVATE'
+                                              'icon-info': row.activeStatus == 'INACTIVE'
                                             }"
                                           ></i
                                           ></span>
@@ -313,15 +302,11 @@
                                     </ng-template>
                                 </ngx-datatable-footer>
                             </ngx-datatable>
-                        </div>
 
                     </div>
                     <ng-template #modalForm let-modal>
                         <!--                        <app-subscriber-certificate-view [data]='detailC'></app-subscriber-certificate-view>-->
                     </ng-template>
-
-                </div>
-            </div>
         </section>
 
     </div>

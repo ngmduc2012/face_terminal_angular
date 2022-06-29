@@ -8,6 +8,9 @@ import {CoreCommonModule} from "../../../@core/common.module";
 import {NgbDropdownModule, NgbPaginationModule, NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {CoreCardModule} from "../../../@core/components/core-card/core-card.module";
 import {Ng2FlatpickrModule} from "ng2-flatpickr";
+import { NgxMaskModule, IConfig } from 'ngx-mask'
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 
 const routes = [
@@ -24,6 +27,7 @@ const routes = [
 @NgModule({
   declarations: [ResultComponent],
   imports: [
+    NgxMaskModule.forRoot(),
     RouterModule.forChild(routes),
     CommonModule,
     ContentHeaderModule,

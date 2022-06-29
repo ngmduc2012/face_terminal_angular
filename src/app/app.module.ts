@@ -20,6 +20,7 @@ import { LayoutModule } from 'app/layout/layout.module';
 import { HomeModule } from 'app/main/home/home.module';
 import {ListModule} from "./main/list/list.module";
 import {ResultModule} from "./main/result/result.module";
+import {AddModule} from "./main/add/add.module";
 
 const appRoutes: Routes = [
   {
@@ -38,7 +39,7 @@ const appRoutes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent,],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -63,7 +64,8 @@ const appRoutes: Routes = [
     LayoutModule,
     HomeModule,
     ListModule,
-      ResultModule,
+    ResultModule,
+    AddModule,
   ],
 
   bootstrap: [AppComponent]

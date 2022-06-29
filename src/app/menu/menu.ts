@@ -26,6 +26,14 @@ export const menu: CoreMenu[] = [
     icon: 'database',
     url: 'result'
   },
+  {
+    id: 'add',
+    title: 'Add',
+    translate: 'MENU.ADD',
+    type: 'item',
+    icon: 'user-plus',
+    url: 'add'
+  },
 
 
 

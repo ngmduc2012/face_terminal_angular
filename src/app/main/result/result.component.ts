@@ -37,9 +37,9 @@ export class ResultComponent implements OnInit {
             search: [null],
             isDecs: [true],
             // defaultDateOptionsStart: [Date.now()],
-            timeOptionsStart: [Date.now()],
+            timeOptionsStart: [null],
             // defaultDateOptionsEnd: [Date.now()],
-            timeOptionsEnd: [Date.now()]
+            timeOptionsEnd: [null]
 
 
         })
@@ -144,7 +144,33 @@ export class ResultComponent implements OnInit {
 
     public startTime = 0
     public endTime = 0
-    endTimeNameNotify = false
+    endTimeNameNotify = ""
+    startTimeNameNotify = ""
+    // public timeRegExp = /^[0-2]{1}[0-9]{1}:[0-5]{1}[0-9]{1} [0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4}$/;
+    public timeRegExp = /^[0-2]{1}[0-9]{1}[0-5]{1}[0-9]{1}[0-3]{1}[0-9]{1}[0-1]{1}[0-9]{1}[0-9]{4}$/;
+    checkStartTime(){
+        console.log(this.formSearch.value.timeOptionsStart)
+        if(!this.timeRegExp.test(this.formSearch.value.timeOptionsStart)){
+            this.startTimeNameNotify = "Không đúng định dạng"
+            return false
+        } else {
+            this.startTimeNameNotify = ""
+            return true
+        }
+    }
+
+    checkEndTime(){
+        console.log(this.formSearch.value.timeOptionsEnd)
+        if(!this.timeRegExp.test(this.formSearch.value.timeOptionsEnd)){
+            this.endTimeNameNotify = "Không đúng định dạng"
+            return false
+        } else {
+            this.endTimeNameNotify = ""
+            return true
+        }
+    }
+
+
 
     search() {
         console.log(this.formSearch.value.search)
@@ -154,8 +180,42 @@ export class ResultComponent implements OnInit {
         // console.log(this.formSearch.value.defaultDateOptionsEnd)
         // console.log(this.formSearch.value.defaultDateOptionsStart)
 
-        const timeOptionsEnd = new Date(this.formSearch.value.timeOptionsEnd);
-        const timeOptionsStart = new Date(this.formSearch.value.timeOptionsStart);
+        if(!this.checkEndTime() || !this.checkStartTime()) return
+        // const timeOptionsEnd = new Date(this.formSearch.value.timeOptionsEnd);
+        // const timeOptionsStart = new Date(this.formSearch.value.timeOptionsStart);
+
+        // const timeOptionsEnd = new Date(
+        //     parseInt(this.formSearch.value.timeOptionsEnd.split(" ")[1].split("/")[2]),
+        //     parseInt(this.formSearch.value.timeOptionsEnd.split(" ")[1].split("/")[1]),
+        //     parseInt(this.formSearch.value.timeOptionsEnd.split(" ")[1].split("/")[0]),
+        //     parseInt(this.formSearch.value.timeOptionsEnd.split(" ")[0].split(":")[0]),
+        //     parseInt(this.formSearch.value.timeOptionsEnd.split(" ")[0].split(":")[1]),
+        //
+        // );
+        const timeOptionsEnd = new Date(
+            parseInt(this.formSearch.value.timeOptionsEnd.substring(8, this.formSearch.value.timeOptionsEnd.length )),
+            parseInt(this.formSearch.value.timeOptionsEnd.substring(6,8)),
+            parseInt(this.formSearch.value.timeOptionsEnd.substring(4,6)),
+            parseInt(this.formSearch.value.timeOptionsEnd.substring(0,2)),
+            parseInt(this.formSearch.value.timeOptionsEnd.substring(2,4)),
+
+        );
+        // const timeOptionsStart = new Date(
+        //     parseInt(this.formSearch.value.timeOptionsStart.split(" ")[1].split("/")[2]),
+        //     parseInt(this.formSearch.value.timeOptionsStart.split(" ")[1].split("/")[1]),
+        //     parseInt(this.formSearch.value.timeOptionsStart.split(" ")[1].split("/")[0]),
+        //     parseInt(this.formSearch.value.timeOptionsStart.split(" ")[0].split(":")[0]),
+        //     parseInt(this.formSearch.value.timeOptionsStart.split(" ")[0].split(":")[1]),
+        // );
+        const timeOptionsStart = new Date(
+            parseInt(this.formSearch.value.timeOptionsStart.substring(8, this.formSearch.value.timeOptionsEnd.length )),
+            parseInt(this.formSearch.value.timeOptionsStart.substring(6,8)),
+            parseInt(this.formSearch.value.timeOptionsStart.substring(4,6)),
+            parseInt(this.formSearch.value.timeOptionsStart.substring(0,2)),
+            parseInt(this.formSearch.value.timeOptionsStart.substring(2,4)),
+
+        );
+
         // const defaultDateOptionsEnd = new Date(this.formSearch.value.defaultDateOptionsEnd);
         // const defaultDateOptionsStart = new Date(this.formSearch.value.defaultDateOptionsStart);
 
@@ -193,9 +253,9 @@ export class ResultComponent implements OnInit {
         console.log("endTime: " + this.endTime)
 
         if(this.startTime>this.endTime){
-            this.endTimeNameNotify = true
+            this.endTimeNameNotify = "Thời gian nhập vào phải lớn hơn thời gian bắt đầu. "
         } else {
-            this.endTimeNameNotify = false
+            this.endTimeNameNotify = ""
             this.getAllOfResult(this.page)
         }
     }

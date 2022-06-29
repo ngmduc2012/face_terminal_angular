@@ -3,7 +3,7 @@
         <!-- content-header component -->
         <app-content-header [contentHeader]="contentHeader"></app-content-header>
 
-        <section *ngIf="isHasResult">
+        <section *ngIf="isHasResult" class="users-list-wrapper">
             <div class="row" id="basic-table">
                 <div class="col-12">
                     <form class="form form-vertical" [formGroup]="formSearch">
@@ -62,10 +62,14 @@
 <!--                                        ></ng2-flatpickr>-->
                                 <input  id="startTime"
                                         class="form-control"
-                                        type="datetime-local"
-                                        placeholder="01/02/2023"
-                                        formControlName="timeOptionsStart"
-                                        mask="00/00/0000" />
+                                        type="text"
+                                        (change)="checkStartTime()"
+                                        placeholder="HH:mm dd/mm/yyyy"
+                                        matInput mask="00:00 00/00/0000"
+                                        formControlName="timeOptionsStart"/>
+                                <div *ngIf="startTimeNameNotify != ''">
+                                    <small class="form-text text-danger">{{startTimeNameNotify}}</small>
+                                </div>
 <!--                                    </div>-->
 <!--                                </div>-->
 
@@ -88,15 +92,14 @@
 <!--                                        ></ng2-flatpickr>-->
                                 <input class="form-control"
                                        id="endTime"
-                                       type="datetime-local"
+                                       type="text"
+                                       (change)="checkEndTime()"
                                        formControlName="timeOptionsEnd"
                                        name="endTimeName"
-                                       placeholder="01/02/2023"
-                                       mask="00/00/0000"
-                                />
-                                <div *ngIf="endTimeNameNotify"
-                                     class="form-text text-muted danger">
-                                    <small>Thời gian nhập vào phải lớn hơn thời gian bắt đầu. </small>
+                                       matInput mask="00:00 00/00/0000"
+                                       placeholder="HH:mm dd/mm/yyyy"/>
+                                <div *ngIf="endTimeNameNotify">
+                                    <small class="form-text text-danger">{{endTimeNameNotify}}</small>
                                 </div>
 <!--                                    </div>-->
 <!--                            </div>-->
@@ -145,6 +148,7 @@
                                 </div>
                             </div>
                             <!--                TRuyền dữ liệu vào bảng-->
+<!--                            [scrollbarH]="true"  biến này dùng để hiện thị trên điện thoại, có thể kéo bảng sang ngang-->
                             <ngx-datatable #tableRowDetails
                                            class="bootstrap core-bootstrap"
                                            [rows]="rowsData"
@@ -155,7 +159,7 @@
                                            [columnMode]="ColumnMode.force"
                                            [headerHeight]="50"
                                            rowHeight="auto"
-                                           [scrollbarH]="false"
+                                           [scrollbarH]="true"
                                            [footerHeight]="50"
                                            [rowHeight]="185"
                                            [externalPaging]="true"
