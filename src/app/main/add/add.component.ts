@@ -8,7 +8,7 @@ import Stepper from "bs-stepper";
 import {ResultService} from "../result/service/result.service";
 import {AddService} from "./services/add.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import { NgxMaskModule, IConfig } from 'ngx-mask'
+import {NgxMaskModule, IConfig} from 'ngx-mask'
 // import { MatInputModule, MatTableModule, MatPaginatorModule, MatSortModule }
 //     from '@angular/material';
 
@@ -62,7 +62,8 @@ export class AddComponent implements OnInit {
             reader.readAsDataURL(event.target.files[0]);
         }
     }
-    removeAvatar(){
+
+    removeAvatar() {
         this.avatarImage = null
         this.avatarImageFile = null
     }
@@ -78,7 +79,8 @@ export class AddComponent implements OnInit {
             reader.readAsDataURL(event.target.files[0]);
         }
     }
-    removeImage(){
+
+    removeImage() {
         this.faceImage = null
         this.faceImageFile = null
     }
@@ -97,13 +99,14 @@ export class AddComponent implements OnInit {
     public gender = 1
     public activeStatus = "ACTIVE"
 
-    selectMale(){
+    selectMale() {
         this.gender = 0
     }
 
-    selectFemale(){
+    selectFemale() {
         this.gender = 1
     }
+
     public notify
 
     submit(modalForm) {
@@ -133,7 +136,7 @@ export class AddComponent implements OnInit {
             formData.append("email", this.email);
             formData.append("name", this.name);
             // formData.append("birthDay", this.birthDate.split("/")[2]+"-"+this.birthDate.split("/")[1]+"-"+this.birthDate.split("/")[0]+"T00:00:00.000Z");
-            formData.append("birthDay", this.birthDate.substring(4,this.birthDate.length)+"-"+this.birthDate.substring(2,4)+"-"+this.birthDate.substring(0,2)+"T00:00:00.000Z");
+            formData.append("birthDay", this.birthDate.substring(4, this.birthDate.length) + "-" + this.birthDate.substring(2, 4) + "-" + this.birthDate.substring(0, 2) + "T00:00:00.000Z");
             formData.append("gender", this.gender + "");
             formData.append("integrationKey", this.integrationKey);
             formData.append("phone", this.mobile);
@@ -219,5 +222,10 @@ export class AddComponent implements OnInit {
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
     }
+
+    changeBirthDay($event: string) {
+        this.birthDate = $event
+    }
+
 
 }

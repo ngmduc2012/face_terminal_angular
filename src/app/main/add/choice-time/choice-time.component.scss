@@ -1,0 +1,36 @@
+@import '@core/scss/angular/libs/datatables.component.scss';
+@import '@core/scss/angular/libs/select.component.scss';
+@import '@core/scss/angular/libs/date-time-picker.component.scss';
+
+.calendar {
+  margin: 0 auto;
+  width: 300px;
+  height: auto;
+
+  .day {
+    width: 38px;
+    text-align: center;
+    margin: 0 auto;
+    display: inline-block;
+    overflow: hidden;
+  }
+}
+
+.center-text{
+  display: inline-block;
+  font-family: $btn-font-family;
+  font-weight: $btn-font-weight;
+  color: $body-color;
+  text-align: center;
+  text-decoration: if($link-decoration == none, null, none);
+  white-space: $btn-white-space;
+  vertical-align: middle;
+  user-select: none;
+  background-color: transparent;
+  border: $btn-border-width solid transparent;
+}
+
+.border{
+  border: 1px solid mediumpurple;
+}
+

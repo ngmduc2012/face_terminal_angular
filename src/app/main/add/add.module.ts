@@ -2,13 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {AddComponent} from "./add.component";
 import {RouterModule} from "@angular/router";
-import {NgbDatepickerModule, NgbNavModule} from "@ng-bootstrap/ng-bootstrap";
+import {NgbDatepickerModule, NgbDropdownModule, NgbNavModule} from "@ng-bootstrap/ng-bootstrap";
 import {Ng2FlatpickrModule} from "ng2-flatpickr";
 import {CoreCommonModule} from "../../../@core/common.module";
 import {ContentHeaderModule} from "../../layout/components/content-header/content-header.module";
 import {NgSelectModule} from "@ng-select/ng-select";
 import { DialogComponent } from './dialog/dialog.component';
-import { NgxMaskModule, IConfig } from 'ngx-mask'
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+import {CalendarCreator, ChoiceTimeComponent} from './choice-time/choice-time.component';
+import {CoreTouchspinModule} from "../../../@core/components/core-touchspin/core-touchspin.module";
+
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 const routes = [
@@ -20,7 +23,7 @@ const routes = [
 ];
 
 @NgModule({
-  declarations: [AddComponent, DialogComponent],
+  declarations: [AddComponent, DialogComponent, ChoiceTimeComponent],
   imports: [
     NgxMaskModule.forRoot(),
     RouterModule.forChild(routes),
@@ -32,6 +35,9 @@ const routes = [
     ContentHeaderModule,
     NgSelectModule,
     NgxMaskModule,
-  ]
+    NgbDropdownModule,
+    CoreTouchspinModule,
+  ],
+  providers: [CalendarCreator],
 })
 export class AddModule { }

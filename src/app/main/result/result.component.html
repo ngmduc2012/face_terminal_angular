@@ -65,7 +65,7 @@
                                         type="text"
                                         (change)="checkStartTime()"
                                         placeholder="HH:mm dd/mm/yyyy"
-                                        matInput mask="00:00 00/00/0000"
+                                        matInput mask="Hh:m0 00/00/0000"
                                         formControlName="timeOptionsStart"/>
                                 <div *ngIf="startTimeNameNotify != ''">
                                     <small class="form-text text-danger">{{startTimeNameNotify}}</small>
@@ -96,7 +96,7 @@
                                        (change)="checkEndTime()"
                                        formControlName="timeOptionsEnd"
                                        name="endTimeName"
-                                       matInput mask="00:00 00/00/0000"
+                                       matInput mask="Hh:m0 00/00/0000"
                                        placeholder="HH:mm dd/mm/yyyy"/>
                                 <div *ngIf="endTimeNameNotify">
                                     <small class="form-text text-danger">{{endTimeNameNotify}}</small>
