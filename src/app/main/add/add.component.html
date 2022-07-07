@@ -121,40 +121,45 @@
                                 <div class="col-lg-4 col-md-6">
                                     <div class="form-group">
                                         <label for="birthDate">Birth date</label>
-                                        <div ngbDropdown >
-                                            <input
-                                                    ngbDropdownToggle
-                                                    id="birthDate"
-                                                    class="form-control"
-                                                    type="text"
-                                                    placeholder="dd/mm/yyyy"
-                                                    name="input"
-                                                    [(ngModel)]="birthDate"
-                                                    [class.error]="accountForm.submitted && FullBirthDateRef2.invalid"
-                                                    #FullBirthDateRef2="ngModel"
-                                                    pattern="[0-3]{1}[0-9]{1}[0-1]{1}[0-9]{1}[0-9]{4}"
-                                                    matInput mask="00/00/0000"
-                                                    required
-                                            />
-                                            <div ngbDropdownMenu class="dropdown-menu-right"
-                                                 aria-labelledby="dropdownBrowserState">
-                                                <app-choice-time
-                                                        class=" calendar2"
-                                                        (getDate)="changeBirthDay($event)"
-                                                ></app-choice-time>
-                                            </div>
-                                        </div>
-                                        <span *ngIf="accountForm.submitted && FullBirthDateRef2.invalid"
-                                              class="invalid-form">
-                                                    <small class="form-text text-danger"
-                                                           *ngIf="FullBirthDateRef2.errors.required"
-                                                    >This field is required!</small>
-                                            <small class="form-text text-danger"
-                                                   *ngIf="FullBirthDateRef2.errors.pattern"
-                                            >Không đúng định dạng</small>
-                                            <!--                                                        <small class="form-text text-danger" *ngIf="FullBirthDateRef.errors.pattern"-->
-                                            <!--                                                        >Không đúng định dạng</small>-->
-                                                  </span>
+                                        <app-choice-time
+                                                id="birthDate"
+                                                class="calendar2"
+                                                (ngModelChange)="getBirthDay($event)"
+                                        ></app-choice-time>
+<!--                                        <div ngbDropdown >-->
+<!--                                            <input-->
+<!--                                                    ngbDropdownToggle-->
+<!--                                                    id="birthDate"-->
+<!--                                                    class="form-control"-->
+<!--                                                    type="text"-->
+<!--                                                    placeholder="dd/mm/yyyy"-->
+<!--                                                    name="input"-->
+<!--                                                    [(ngModel)]="birthDay.dateTime.getDate"-->
+<!--                                                    [class.error]="accountForm.submitted && FullBirthDateRef2.invalid"-->
+<!--                                                    #FullBirthDateRef2="ngModel"-->
+<!--                                                    pattern="[0-3]{1}[0-9]{1}[0-1]{1}[0-9]{1}[0-9]{4}"-->
+<!--                                                    matInput mask="00/00/0000"-->
+<!--                                                    required-->
+<!--                                                    (ngModelChange)="birthDay.setUpData()"-->
+<!--                                            />-->
+<!--                                          <div ngbDropdownMenu class="dropdown-menu-right"-->
+<!--                                                 aria-labelledby="dropdownBrowserState">-->
+<!--                                                <app-choice-time-->
+<!--                                                        class=" calendar2"-->
+<!--                                                ></app-choice-time>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <span *ngIf="accountForm.submitted && FullBirthDateRef2.invalid"-->
+<!--                                              class="invalid-form">-->
+<!--                                                    <small class="form-text text-danger"-->
+<!--                                                           *ngIf="FullBirthDateRef2.errors.required"-->
+<!--                                                    >This field is required!</small>-->
+<!--                                            <small class="form-text text-danger"-->
+<!--                                                   *ngIf="FullBirthDateRef2.errors.pattern"-->
+<!--                                            >Không đúng định dạng</small>-->
+<!--                                            &lt;!&ndash;                                                        <small class="form-text text-danger" *ngIf="FullBirthDateRef.errors.pattern"&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                                                        >Không đúng định dạng</small>&ndash;&gt;-->
+<!--                                                  </span>-->
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6">

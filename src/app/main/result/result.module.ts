@@ -9,6 +9,9 @@ import {NgbDropdownModule, NgbPaginationModule, NgbTooltipModule} from "@ng-boot
 import {CoreCardModule} from "../../../@core/components/core-card/core-card.module";
 import {Ng2FlatpickrModule} from "ng2-flatpickr";
 import { NgxMaskModule, IConfig } from 'ngx-mask'
+import {ChoiceTimeComponent} from "../add/choice-time/choice-time.component";
+import {ChoiceTimeModule} from "../add/choice-time/choice-time.module";
+import {ChoiceTimeService} from "../add/choice-time/choice-time.service";
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -38,6 +41,7 @@ const routes = [
     NgbPaginationModule,
     CoreCardModule,
     Ng2FlatpickrModule,
-  ]
+    ChoiceTimeModule,
+  ],
 })
 export class ResultModule { }

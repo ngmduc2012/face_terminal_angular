@@ -1,75 +1,130 @@
-<div class="content-body">
-    <div class="d-flex justify-content-between">
-        <a class="btn btn-prev"
-           (click)="onPreviousMonth()">
-            <i data-feather="chevron-left" class="mr-50"></i></a>
-        <!-- Custom Select -->
+<div ngbDropdown>
+    <input
+            ngbDropdownToggle
+            class="form-control"
+            type="text"
+            [placeholder]="getTime? 'HH:mm dd/mm/yyyy' : 'dd/mm/yyyy'"
+            name="input"
+            [(ngModel)]="getDate"
+            matInput [mask]="getTime? 'Hh:m0 00/00/0000' : '00/00/0000'"
+            required
+            (ngModelChange)="setUpData()"
+            (ngModelChange)="upData()"
+    />
+    <!--    <input *ngIf="getTime"-->
+    <!--           ngbDropdownToggle-->
+    <!--            id="startTime"-->
+    <!--            class="form-control"-->
+    <!--            type="text"-->
+    <!--            [(ngModel)]="choiceTimeService.dateTime.getDate"-->
+    <!--            placeholder="HH:mm dd/mm/yyyy"-->
+    <!--            matInput mask="Hh:m0 00/00/0000"-->
+    <!--            formControlName="timeOptionsStart"-->
+    <!--            required-->
+    <!--            (ngModelChange)="choiceTimeService.setUpData()"-->
+    <!--            (ngModelChange)="upData()"-->
+    <!--    />-->
+    <div ngbDropdownMenu class="dropdown-menu-right"
+         aria-labelledby="dropdownBrowserState">
+        <div class="form-group custom-control">
+            <div class="row">
+                <div [ngClass]="{'col-md-9 col-12' : getTime == true }">
+                    <div class="content-body">
+                        <div class="d-flex justify-content-between">
+                            <a class="btn btn-prev"
+                               (click)="onPreviousMonth()">
+                                <i data-feather="chevron-left" class="mr-50"></i></a>
+                            <!-- Custom Select -->
 
-        <select class="custom-select"
-                [(ngModel)]="monthNumber"
-                (change)="update()"
-        >
-            <option type="number" value="0">Thg 1</option>
-            <option type="number" value="1">Thg 2</option>
-            <option type="number" value="2">Thg 3</option>
-            <option type="number" value="3">Thg 4</option>
-            <option type="number" value="4">Thg 5</option>
-            <option type="number" value="5">Thg 6</option>
-            <option type="number" value="6">Thg 7</option>
-            <option type="number" value="7">Thg 8</option>
-            <option type="number" value="8">Thg 9</option>
-            <option type="number" value="9">Thg 10</option>
-            <option type="number" value="10">Thg 11</option>
-            <option type="number" value="11">Thg 12</option>
-        </select>
+                            <select class="custom-select d-flex"
+                                    [(ngModel)]="monthNumber"
+                                    (change)="update()"
+                            >
+                                <option type="number" value="0">Thg 1</option>
+                                <option type="number" value="1">Thg 2</option>
+                                <option type="number" value="2">Thg 3</option>
+                                <option type="number" value="3">Thg 4</option>
+                                <option type="number" value="4">Thg 5</option>
+                                <option type="number" value="5">Thg 6</option>
+                                <option type="number" value="6">Thg 7</option>
+                                <option type="number" value="7">Thg 8</option>
+                                <option type="number" value="8">Thg 9</option>
+                                <option type="number" value="9">Thg 10</option>
+                                <option type="number" value="10">Thg 11</option>
+                                <option type="number" value="11">Thg 12</option>
+                            </select>
 
-        <!--        <span class="align-middle d-sm-inline-block d-none"> {{ calendarCreator.getMonthName(monthNumber) }}-->
-        <!--            &nbsp; {{ year }} </span>-->
+                            <!--        <span class="align-middle d-sm-inline-block d-none"> {{ calendarCreator.getMonthName(monthNumber) }}-->
+                            <!--            &nbsp; {{ year }} </span>-->
 
-        <!-- touchspin min-max -->
-        <core-touchspin
-                [size]="'lg'"
-                [numberValue]="year"
-                [stepValue]="1"
-                [minValue]="0"
-                (onChange)="changeYear($event)"
-                [maxValue]="100000"
-                [iconChevron]="true"
-        ></core-touchspin>
+                            <!-- touchspin min-max -->
+                            <core-touchspin
+                                    class="d-flex"
+                                    [size]="'lg'"
+                                    [numberValue]="year"
+                                    [stepValue]="1"
+                                    [minValue]="0"
+                                    (onChange)="changeYear($event)"
+                                    [maxValue]="10000"
+                                    [iconChevron]="true"
+                            ></core-touchspin>
 
-        <!--        <input-->
-        <!--                [(ngModel)]="year"-->
-        <!--                class="form-control"-->
-        <!--                type="text"-->
-        <!--                name="input"-->
-        <!--                matInput mask="0000"-->
-        <!--                (ngModelChange)="update()"-->
-        <!--        />-->
-        <a class="btn btn-next"
-           (click)="onNextMonth()">
-            <i data-feather="chevron-right" class="mr-50"></i></a>
-    </div>
-    <div class="d-flex justify-content-between">
-        <div></div>
-        <div class="calendar ">
-      <span *ngFor='let weekDay of weekDaysName' class="day ">
-          <p>  {{ weekDay }}</p>
+                            <!--        <input-->
+                            <!--                [(ngModel)]="year"-->
+                            <!--                class="form-control"-->
+                            <!--                type="text"-->
+                            <!--                name="input"-->
+                            <!--                matInput mask="0000"-->
+                            <!--                (ngModelChange)="update()"-->
+                            <!--        />-->
+                            <a class="btn btn-next"
+                               (click)="onNextMonth()">
+                                <i data-feather="chevron-right" class="mr-50"></i></a>
+                        </div>
+                        <div class=" justify-content-between">
+                            <div></div>
+                            <div class="calendar ">
+                                  <span *ngFor='let weekDay of weekDaysName' class="day ">
+                                      <p>  {{ weekDay }}</p>
 
-      </span>
+                                  </span>
 
-            <span *ngFor='let day of monthDays'
-                  class="day"
-                  [attr.data-index]="day"
-            >
-                <button class="center-text"
-                        [ngClass]="[bntStyle(day)]" (click)="click(day)">
-        {{ day.number }}
-                </button>
-      </span>
+                                <span *ngFor='let day of monthDays'
+                                      class="day"
+                                      [attr.data-index]="day">
+                                            <button class="center-text"
+                                                    [ngClass]="[bntStyle(day)]" (click)="clickDay(day)">
+                                    {{ day.number }}
+                                            </button>
+                                  </span>
+                            </div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
 
+                <div *ngIf="getTime" class="col-md-3 col-12 d-flex justify-content-start justify-content-md-end">
+                    <div class="d-flex align-items-center ml-1 ml-md-0 ">
+                        <div class="d-flex justify-content-between">
+                            <div></div>
+                            <ngb-timepicker
+                                    class="d-flex" [(ngModel)]="time"
+                                    (ngModelChange)="clickHour()"
+                            ></ngb-timepicker>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
 
+            </div>
         </div>
-        <div></div>
+
     </div>
 </div>
-
+<span *ngIf="notify != ''"
+      class="invalid-form">
+    <small class="form-text text-danger"
+    >{{notify}}</small>
+    <!--                                                        <small class="form-text text-danger" *ngIf="FullBirthDateRef.errors.pattern"-->
+    <!--                                                        >Không đúng định dạng</small>-->
+</span>

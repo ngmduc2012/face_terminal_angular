@@ -14,6 +14,7 @@ import {ResultService} from "./service/result.service";
 import {interval, Subscription} from "rxjs";
 import {ConvertList, List} from "../list/modules/list";
 import {FlatpickrOptions} from "ng2-flatpickr";
+import {ChoiceTimeService} from "../add/choice-time/choice-time.service";
 
 
 @Component({
@@ -374,4 +375,27 @@ export class ResultComponent implements OnInit {
         this.getAllOfResult(this.page)
     }
 
+    changeStartTime($event: string) {
+        console.log($event)
+        this.formSearch.setValue({
+            search: this.formSearch.value.search,
+            isDecs: this.formSearch.value.isDecs,
+            // defaultDateOptionsStart: [Date.now()],
+            timeOptionsStart: $event,
+            // defaultDateOptionsEnd: [Date.now()],
+            timeOptionsEnd: this.formSearch.value.timeOptionsEnd
+        });
+    }
+
+    changeEndTime($event: string) {
+        console.log($event)
+        this.formSearch.setValue({
+            search: this.formSearch.value.search,
+            isDecs: this.formSearch.value.isDecs,
+            // defaultDateOptionsStart: [Date.now()],
+            timeOptionsStart: this.formSearch.value.timeOptionsStart,
+            // defaultDateOptionsEnd: [Date.now()],
+            timeOptionsEnd:  $event
+        });
+    }
 }

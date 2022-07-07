@@ -3,113 +3,132 @@
         <!-- content-header component -->
         <app-content-header [contentHeader]="contentHeader"></app-content-header>
 
-        <section *ngIf="isHasResult" class="users-list-wrapper">
+        <section  class="users-list-wrapper">
             <div class="row" id="basic-table">
                 <div class="col-12">
                     <form class="form form-vertical" [formGroup]="formSearch">
-                        <core-card [actions]="['collapse']" >
+                        <core-card [actions]="['collapse']">
                             <h6 class="card-title"><b>Tìm kiếm</b></h6>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 col-12 mb-1">
-                                <div class=" form-group custom-control custom-switch custom-switch-success ">
-                                    <div class="custom-control custom-switch custom-control-inline">
-                                        <input
-                                                type="checkbox"
-                                                class="custom-control-input"
-                                                id="customSwitch1"
-                                                formControlName="isDecs"
-                                        />
-                                        <label class="custom-control-label" for="customSwitch1">Sắp xếp theo tứ tự giảm dần</label>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 col-12 mb-1">
+                                        <div class=" form-group custom-control custom-switch custom-switch-success ">
+                                            <div class="custom-control custom-switch custom-control-inline">
+                                                <input
+                                                        type="checkbox"
+                                                        class="custom-control-input"
+                                                        id="customSwitch1"
+                                                        formControlName="isDecs"
+                                                />
+                                                <label class="custom-control-label" for="customSwitch1">Sắp xếp theo tứ
+                                                    tự giảm dần</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12 mb-1">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <button class="btn btn-outline-primary" type="button" rippleEffect>
+                                                    <i data-feather="search"></i>
+                                                </button>
+                                            </div>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Nhập từ muốn tìm kiếm"
+                                                   formControlName="search"
+                                                   aria-label="Amount"/>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-primary" type="button"
+                                                        [disabled]="!formSearch.valid" (click)="search()"
+                                                        rippleEffect>Search !
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-12 mb-1">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <button class="btn btn-outline-primary" type="button" rippleEffect>
-                                            <i data-feather="search"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control"
-                                           placeholder="Nhập từ muốn tìm kiếm"
-                                           formControlName="search"
-                                           aria-label="Amount" />
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-primary" type="button"
-                                                [disabled]="!formSearch.valid" (click)="search()"
-                                                rippleEffect>Search !</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-12 mb-1">
-                                <label for="startTime">Thời gian bắt đầu</label>
-<!--                                <div class="row" id="startTime">-->
-<!--                                    <div class="col-md-6 col-12 mb-1">-->
-<!--                                        <ng2-flatpickr-->
-<!--                                                [config]="timeOptionsStart"-->
-<!--                                                name="time"-->
-<!--                                                formControlName="timeOptionsStart"-->
-<!--                                        ></ng2-flatpickr>-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-6 col-12 mb-1">-->
-<!--                                        <ng2-flatpickr-->
-<!--                                                [config]="DefaultDateOptionsStart"-->
-<!--                                                name="DefaultDate"-->
-<!--                                                formControlName="defaultDateOptionsStart"-->
-<!--                                        ></ng2-flatpickr>-->
-                                <input  id="startTime"
-                                        class="form-control"
-                                        type="text"
-                                        (change)="checkStartTime()"
-                                        placeholder="HH:mm dd/mm/yyyy"
-                                        matInput mask="Hh:m0 00/00/0000"
-                                        formControlName="timeOptionsStart"/>
-                                <div *ngIf="startTimeNameNotify != ''">
-                                    <small class="form-text text-danger">{{startTimeNameNotify}}</small>
-                                </div>
-<!--                                    </div>-->
-<!--                                </div>-->
+                                <div class="row">
+                                    <div class="col-md-6 col-12 mb-1">
+                                        <label for="startTime">Thời gian bắt đầu</label>
+                                        <!--                                <div class="row" id="startTime">-->
+                                        <!--                                    <div class="col-md-6 col-12 mb-1">-->
+                                        <!--                                        <ng2-flatpickr-->
+                                        <!--                                                [config]="timeOptionsStart"-->
+                                        <!--                                                name="time"-->
+                                        <!--                                                formControlName="timeOptionsStart"-->
+                                        <!--                                        ></ng2-flatpickr>-->
+                                        <!--                                    </div>-->
+                                        <!--                                    <div class="col-md-6 col-12 mb-1">-->
+                                        <!--                                        <ng2-flatpickr-->
+                                        <!--                                                [config]="DefaultDateOptionsStart"-->
+                                        <!--                                                name="DefaultDate"-->
+                                        <!--                                                formControlName="defaultDateOptionsStart"-->
+                                        <!--                                        ></ng2-flatpickr>-->
 
-                            </div>
-                            <div class="col-md-6 col-12 mb-1">
-                                <label for="endTime">Thời gian kết thúc</label>
-<!--                                <div class="row" id="endTime">-->
-<!--                                    <div class="col-md-6 col-12 mb-1">-->
-<!--                                        <ng2-flatpickr-->
-<!--                                                [config]="timeOptionsEnd"-->
-<!--                                                name="time"-->
-<!--                                                formControlName="timeOptionsEnd"-->
-<!--                                        ></ng2-flatpickr>-->
-<!--                                    </div>-->
-<!--                                    <div class="col-md-6 col-12 mb-1">-->
-<!--                                        <ng2-flatpickr-->
-<!--                                                [config]="DefaultDateOptionsEnd"-->
-<!--                                                       name="DefaultDate"-->
-<!--                                                formControlName="defaultDateOptionsEnd"-->
-<!--                                        ></ng2-flatpickr>-->
-                                <input class="form-control"
-                                       id="endTime"
-                                       type="text"
-                                       (change)="checkEndTime()"
-                                       formControlName="timeOptionsEnd"
-                                       name="endTimeName"
-                                       matInput mask="Hh:m0 00/00/0000"
-                                       placeholder="HH:mm dd/mm/yyyy"/>
-                                <div *ngIf="endTimeNameNotify">
-                                    <small class="form-text text-danger">{{endTimeNameNotify}}</small>
+                                                <app-choice-time
+                                                        id="startTime"
+                                                        class=" calendar2"
+                                                        getTime="true"
+                                                        (ngModelChange)="changeStartTime($event)"
+                                                ></app-choice-time>
+<!--                                        <div *ngIf="startTimeNameNotify != ''">-->
+<!--                                            <small class="form-text text-danger">{{startTimeNameNotify}}</small>-->
+<!--                                        </div>-->
+                                        <!--                                    </div>-->
+                                        <!--                                </div>-->
+
+                                    </div>
+                                    <div class="col-md-6 col-12 mb-1">
+                                        <label for="endTime">Thời gian kết thúc</label>
+                                        <!--                                <div class="row" id="endTime">-->
+                                        <!--                                    <div class="col-md-6 col-12 mb-1">-->
+                                        <!--                                        <ng2-flatpickr-->
+                                        <!--                                                [config]="timeOptionsEnd"-->
+                                        <!--                                                name="time"-->
+                                        <!--                                                formControlName="timeOptionsEnd"-->
+                                        <!--                                        ></ng2-flatpickr>-->
+                                        <!--                                    </div>-->
+                                        <!--                                    <div class="col-md-6 col-12 mb-1">-->
+                                        <!--                                        <ng2-flatpickr-->
+                                        <!--                                                [config]="DefaultDateOptionsEnd"-->
+                                        <!--                                                       name="DefaultDate"-->
+                                        <!--                                                formControlName="defaultDateOptionsEnd"-->
+                                        <!--                                        ></ng2-flatpickr>-->
+<!--                                        <div ngbDropdown>-->
+<!--                                            <input-->
+<!--                                                    ngbDropdownToggle-->
+<!--                                                    class="form-control"-->
+<!--                                                    id="endTime"-->
+<!--                                                    type="text"-->
+<!--                                                    [(ngModel)]="endTimeService.dateTime.getDate"-->
+<!--                                                    formControlName="timeOptionsEnd"-->
+<!--                                                    name="endTimeName"-->
+<!--                                                    matInput mask="Hh:m0 00/00/0000"-->
+<!--                                                    placeholder="HH:mm dd/mm/yyyy"-->
+<!--                                                    required-->
+<!--                                                    (ngModelChange)="endTimeService.setUpData()"-->
+<!--                                                    (change)="checkEndTime()"-->
+<!--                                            />-->
+<!--                                            <div ngbDropdownMenu class="dropdown-menu-right"-->
+<!--                                                 aria-labelledby="dropdownBrowserState">-->
+                                                <app-choice-time
+                                                        id="endTime"
+                                                        class=" calendar2"
+                                                        getTime="true"
+                                                        (ngModelChange)="changeEndTime($event)"
+                                                ></app-choice-time>
+<!--                                            </div>-->
+<!--                                        </div>-->
+                                        <div *ngIf="endTimeNameNotify != ''">
+                                            <small class="form-text text-danger">{{endTimeNameNotify}}</small>
+                                        </div>
+                                        <!--                                    </div>-->
+                                        <!--                            </div>-->
+                                    </div>
                                 </div>
-<!--                                    </div>-->
-<!--                            </div>-->
-                        </div>
-                    </div>
-                    </div>
+                            </div>
                         </core-card>
                     </form>
 
-                    <div class="card">
+                    <div *ngIf="isHasResult" class="card">
                         <!--        Tên tiêu đề của bảng-->
                         <!--                        <div class="card-header">-->
                         <!--                            <h4 class="card-title">Danh sách người dùng</h4>-->
@@ -123,7 +142,7 @@
                                 <div class="col-md-6 col-12">
                                     <div class="d-flex justify-content-between align-items-center m-1">
                                         <div class="d-flex align-items-center">
-                                            <h4 class="card-title">Danh sách người dùng</h4> </div>
+                                            <h4 class="card-title">Danh sách người dùng</h4></div>
                                     </div>
                                 </div>
                                 <div
@@ -148,7 +167,7 @@
                                 </div>
                             </div>
                             <!--                TRuyền dữ liệu vào bảng-->
-<!--                            [scrollbarH]="true"  biến này dùng để hiện thị trên điện thoại, có thể kéo bảng sang ngang-->
+                            <!--                            [scrollbarH]="true"  biến này dùng để hiện thị trên điện thoại, có thể kéo bảng sang ngang-->
                             <ngx-datatable #tableRowDetails
                                            class="bootstrap core-bootstrap"
                                            [rows]="rowsData"
@@ -241,7 +260,7 @@
                                                         class="rounded-circle mr-1"
                                                         src="data:image/jpg;base64,{{row.faceImage}}"
                                                         style="width: 100px;height:100px;"
-                                                        alt="datatable-avatar" />
+                                                        alt="datatable-avatar"/>
 
                                             </div>
                                             <ng-template #customAvatar>
@@ -264,7 +283,7 @@
                                         name="Thông số"
                                         prop="temp"
                                 >
-                                    <ng-template  let-row="row" ngx-datatable-cell-template let-value="value">
+                                    <ng-template let-row="row" ngx-datatable-cell-template let-value="value">
 
                                         <div class="cell-line-height ">
                                             <span class="font-weight-bold d-block text-nowrap font-medium-1">Nhiệt độ cơ thể: </span>
@@ -290,7 +309,7 @@
                                             <span class="font-weight-bold d-block text-nowrap font-medium-1">Cho phép lựa chọn in/out: </span>
                                             <span class="text-muted font-small-2">{{ row.isUserSelectInOut ? "Có" : "Không" }}</span>
                                         </div>
-<!--                                        <div class="datatable-body-cell-label">{{value}}</div>-->
+                                        <!--                                        <div class="datatable-body-cell-label">{{value}}</div>-->
                                     </ng-template>
                                 </ngx-datatable-column>
                                 <ngx-datatable-column
@@ -306,9 +325,9 @@
                                             <span class="font-weight-bold d-block text-nowrap font-medium-1">Cách chấm công: </span>
                                             <span class="text-muted font-small-2">{{ row.recognitionType == "0" ? "Offline" : row.recognitionType == "1" ? "Online" : "Mobile" }}</span>
                                             <span class="font-weight-bold d-block text-nowrap font-medium-1">Loại chấm công: </span>
-                                            <span class="text-muted font-small-2">{{ row.FaceCheckType  == "0" ? "In" : row.FaceCheckType == "1" ? "Out" : "Unknown" }}</span>
+                                            <span class="text-muted font-small-2">{{ row.FaceCheckType == "0" ? "In" : row.FaceCheckType == "1" ? "Out" : "Unknown" }}</span>
                                         </div>
-<!--                                        <div class="datatable-body-cell-label">{{value  | date: "dd/MM/YYYY" }}</div>-->
+                                        <!--                                        <div class="datatable-body-cell-label">{{value  | date: "dd/MM/YYYY" }}</div>-->
                                     </ng-template>
                                 </ngx-datatable-column>
                                 <!--            Tạo cột hành động, dùng để thêm các thao tác trong hàng-->
@@ -326,8 +345,10 @@
                                             ></a>
                                             <!--                                    Phê duyệt chứng chỉ-->
                                             <div ngbDropdown container="body">
-                                                <button ngbDropdownToggle type="button" class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
-                                                    <i data-feather="more-vertical" size="18" class="cursor-pointer"></i>
+                                                <button ngbDropdownToggle type="button"
+                                                        class="btn icon-btn btn-sm hide-arrow px-0" rippleEffect>
+                                                    <i data-feather="more-vertical" size="18"
+                                                       class="cursor-pointer"></i>
                                                 </button>
 
                                                 <div ngbDropdownMenu class="dropdown-menu-right"

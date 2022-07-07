@@ -9,6 +9,8 @@ import {ResultService} from "../result/service/result.service";
 import {AddService} from "./services/add.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {NgxMaskModule, IConfig} from 'ngx-mask'
+import {ChoiceTimeService} from "./choice-time/choice-time.service";
+import {ContentHeader} from "../../layout/components/content-header/content-header.component";
 // import { MatInputModule, MatTableModule, MatPaginatorModule, MatSortModule }
 //     from '@angular/material';
 
@@ -30,7 +32,7 @@ export class AddComponent implements OnInit {
 
     // Private
     private _unsubscribeAll: Subject<any>
-    public contentHeader: object
+    public contentHeader: ContentHeader
     form: FormGroup;
 
     constructor(
@@ -44,7 +46,7 @@ export class AddComponent implements OnInit {
         this.form = this.fb.group({
             firstName: [null]
         })
-    }
+  }
 
     /**
      * Upload Image
@@ -86,7 +88,7 @@ export class AddComponent implements OnInit {
     }
 
     public name = null
-    public birthDate = null
+    public birthDay = null
     public email = null
     public mobile = null
     public integrationKey = null
@@ -136,7 +138,10 @@ export class AddComponent implements OnInit {
             formData.append("email", this.email);
             formData.append("name", this.name);
             // formData.append("birthDay", this.birthDate.split("/")[2]+"-"+this.birthDate.split("/")[1]+"-"+this.birthDate.split("/")[0]+"T00:00:00.000Z");
-            formData.append("birthDay", this.birthDate.substring(4, this.birthDate.length) + "-" + this.birthDate.substring(2, 4) + "-" + this.birthDate.substring(0, 2) + "T00:00:00.000Z");
+            formData.append("birthDay", this.birthDay.substring(4, this.birthDay.length)
+                + "-" + this.birthDay.substring(2, 4)
+                + "-" + this.birthDay.substring(0, 2)
+                + "T00:00:00.000Z");
             formData.append("gender", this.gender + "");
             formData.append("integrationKey", this.integrationKey);
             formData.append("phone", this.mobile);
@@ -148,17 +153,17 @@ export class AddComponent implements OnInit {
             formData.append("avatar", this.avatarImageFile);
             formData.append("faceImage", this.faceImageFile);
             console.log(formData)
-            this.addService.postData(formData).subscribe((res: any) => {
-                console.log(res)
-                if (res.isSuccess === true) {
-                    this.notify = res.message
-                }
-                // and vice versa
-                if (res.isSuccess === false) {
-                    this.notify = "Thất bại: " + res.message
-                }
-                this.modal.open(modalForm, {size: 'lg'})
-            })
+                this.addService.postData(formData).subscribe((res: any) => {
+                    console.log(res)
+                    if (res.isSuccess === true) {
+                        this.notify = res.message
+                    }
+                    // and vice versa
+                    if (res.isSuccess === false) {
+                        this.notify = "Thất bại: " + res.message
+                    }
+                    this.modal.open(modalForm, {size: 'lg'})
+                })
         } else {
             this.modernHorizontalPrevious()
         }
@@ -190,8 +195,6 @@ export class AddComponent implements OnInit {
      * On init
      */
     ngOnInit(): void {
-
-
         this.modernWizardStepper = new Stepper(document.querySelector('#stepper3'), {
             linear: false,
             animation: true
@@ -223,9 +226,9 @@ export class AddComponent implements OnInit {
         this._unsubscribeAll.complete();
     }
 
-    changeBirthDay($event: string) {
-        this.birthDate = $event
+    getBirthDay($event: string) {
+        console.log("$event: " +$event)
+        this.birthDay = $event
     }
-
-
 }
+

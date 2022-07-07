@@ -20,7 +20,7 @@ export interface ContentHeader {
 })
 export class ContentHeaderComponent implements OnInit {
   // input variable
-  @Input() contentHeader: ContentHeader;
+  @Input() contentHeader: object;
 
   constructor() {}
 

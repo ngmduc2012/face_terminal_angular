@@ -9,8 +9,10 @@ import {ContentHeaderModule} from "../../layout/components/content-header/conten
 import {NgSelectModule} from "@ng-select/ng-select";
 import { DialogComponent } from './dialog/dialog.component';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
-import {CalendarCreator, ChoiceTimeComponent} from './choice-time/choice-time.component';
 import {CoreTouchspinModule} from "../../../@core/components/core-touchspin/core-touchspin.module";
+import {ChoiceTimeModule} from "./choice-time/choice-time.module";
+import {ChoiceTimeService} from "./choice-time/choice-time.service";
+import {CalendarCreator} from "./choice-time/calendar";
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -23,7 +25,7 @@ const routes = [
 ];
 
 @NgModule({
-  declarations: [AddComponent, DialogComponent, ChoiceTimeComponent],
+  declarations: [AddComponent, DialogComponent],
   imports: [
     NgxMaskModule.forRoot(),
     RouterModule.forChild(routes),
@@ -37,7 +39,9 @@ const routes = [
     NgxMaskModule,
     NgbDropdownModule,
     CoreTouchspinModule,
+    ChoiceTimeModule,
   ],
   providers: [CalendarCreator],
+
 })
 export class AddModule { }
