@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {takeUntil} from "rxjs/operators";
 import {Router} from "@angular/router";
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {FlatpickrOptions} from "ng2-flatpickr";
 import {FormBuilder, FormControl, FormGroup, NgForm} from "@angular/forms";
 import Stepper from "bs-stepper";
@@ -11,6 +11,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {NgxMaskModule, IConfig} from 'ngx-mask'
 import {ChoiceTimeService} from "./choice-time/choice-time.service";
 import {ContentHeader} from "../../layout/components/content-header/content-header.component";
+import {WebcamImage, WebcamInitError, WebcamUtil} from "ngx-webcam";
 // import { MatInputModule, MatTableModule, MatPaginatorModule, MatSortModule }
 //     from '@angular/material';
 
@@ -70,32 +71,16 @@ export class AddComponent implements OnInit {
         this.avatarImageFile = null
     }
 
-    uploadImage(event: any) {
-        if (event.target.files && event.target.files[0]) {
-            let reader = new FileReader();
 
-            reader.onload = (event: any) => {
-                this.faceImage = event.target.result;
-            };
-            this.faceImageFile = event.target.files[0]
-            reader.readAsDataURL(event.target.files[0]);
-        }
-    }
-
-    removeImage() {
-        this.faceImage = null
-        this.faceImageFile = null
-    }
-
-    public name = null
-    public birthDay = null
-    public email = null
-    public mobile = null
-    public integrationKey = null
-    public companyId = null
-    public companyName
-    public departmentId
-    public departmentName
+    public name = "84973747012"
+    public birthDay = "15121998"
+    public email = "ngmduc2012@gmail.com"
+    public mobile =   "84973747012"
+    public integrationKey =   "84973747012"
+    public companyId =   "84973747012"
+    public companyName =   "84973747012"
+    public departmentId=   "84973747012"
+    public departmentName=   "84973747012"
     public avatarImageFile
     public faceImageFile
     public gender = 1
@@ -230,5 +215,87 @@ export class AddComponent implements OnInit {
         console.log("$event: " +$event)
         this.birthDay = $event
     }
+
+
+
+    CACHE_KEY = 'httpCache'
+
+    saveImageInCache($event){
+        localStorage[this.CACHE_KEY] = $event
+        this.uploadImage = localStorage[this.CACHE_KEY]
+    }
+
+    uploadImage(event: any) {
+        if (event.target.files && event.target.files[0]) {
+            let reader = new FileReader();
+
+            reader.onload = (event: any) => {
+                this.faceImage = event.target.result;
+            };
+            this.faceImageFile = event.target.files[0]
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+
+    removeImage() {
+        this.faceImage = null
+        this.faceImageFile = null
+    }
+
+    // Camera
+    stream: any = null;
+    status: any = null;
+    trigger: Subject<void> = new Subject();
+    previewImage: string = '';
+    btnLabel: string = 'Capture image';
+
+    //biến kích hoạt, trả về có sự kiện để quan sát.
+    get $trigger(): Observable<void> {
+        return this.trigger.asObservable();
+    }
+
+    // Khi (*) được kích hoạt, hàm sẽ nhận được ảnh trả về từ webcam
+    // Lấy hình ảnh đó lưu vào bộ nhớ tạm thời và hiển thị ra ngoài màn hình.
+    snapshot(event: WebcamImage) {
+        this.saveImageInCache(event)
+        console.log(event);
+        this.previewImage = event.imageAsDataUrl;
+        this.btnLabel = 'Re capture image'
+    }
+
+    // Kiểm tra quyền truy cập cam, nếu không có lỗi gì thì sẽ trả về
+    // stream, nếu stream không rỗng thì hiển thị webcam
+    checkPermissions() {
+        navigator.mediaDevices.getUserMedia({
+            video: {
+                width: 500,
+                height: 500
+            }
+        }).then((res) => {
+            console.log("response", res);
+            this.stream = res;
+            this.status = 'My camera is accessing';
+            this.btnLabel = 'Capture image';
+        }).catch(err => {
+            console.log(err);
+            if(err?.message === 'Permission denied') {
+                this.status = 'Permission denied please try again by approving the access';
+            } else {
+                this.status = 'You may not having camera system, Please try again ...';
+            }
+        })
+    }
+
+    //Lấy hình ảnh
+    // (*)
+    captureImage() {
+        this.trigger.next();
+    }
+
+    //Hiển dữ liệu hình ảnh dưới dạng bas64
+    proceed() {
+        console.log(this.previewImage);
+    }
+
 }
 

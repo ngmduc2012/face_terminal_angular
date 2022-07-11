@@ -13,6 +13,7 @@ import {CoreTouchspinModule} from "../../../@core/components/core-touchspin/core
 import {ChoiceTimeModule} from "./choice-time/choice-time.module";
 import {ChoiceTimeService} from "./choice-time/choice-time.service";
 import {CalendarCreator} from "./choice-time/calendar";
+import {WebcamModule} from "ngx-webcam";
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -40,6 +41,7 @@ const routes = [
     NgbDropdownModule,
     CoreTouchspinModule,
     ChoiceTimeModule,
+    WebcamModule,
   ],
   providers: [CalendarCreator],
 
