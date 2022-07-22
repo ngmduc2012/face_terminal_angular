@@ -98,6 +98,8 @@ export class AddComponent implements OnInit {
         // this.onStart()
     }
 
+    /** I./ Tab lấy thông tin người dùng*/
+
     /**
      * Upload Image
      *
@@ -143,11 +145,40 @@ export class AddComponent implements OnInit {
         this.gender = 1
     }
 
+    getBirthDay($event: string) {
+        console.log("$event: " + $event)
+        this.birthDay = $event
+    }
+
+    CACHE_KEY = 'httpCache'
+
+    saveImageInCache($event) {
+        localStorage[this.CACHE_KEY] = $event
+        this.uploadImage = localStorage[this.CACHE_KEY]
+    }
+
+    uploadImage(event: any) {
+        if (event.target.files && event.target.files[0]) {
+            let reader = new FileReader();
+
+            reader.onload = (event: any) => {
+                this.faceImage = event.target.result;
+            };
+            this.faceImageFile = event.target.files[0]
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+
+    removeImage() {
+        this.faceImage = null
+        this.faceImageFile = null
+    }
+
     public notify
 
     submit() {
         if (this.accountForm.valid) {
-            if(this.isCheckQuality){
+            if (this.isCheckQuality) {
                 this.notify = "Vui lòng chờ kiểm tra chất lượng hình ảnh!"
                 this.modal.open(this.modalForm, {size: 'lg'})
             } else {
@@ -209,23 +240,176 @@ export class AddComponent implements OnInit {
         this.modernWizardStepper.previous();
     }
 
-
     // private
     private modernWizardStepper: Stepper;
     private bsStepper;
 
-    // Lifecycle Hooks
-    // -----------------------------------------------------------------------------------------------------
+    @ViewChild('modalForm')
+    modalForm: ElementRef<HTMLCanvasElement>;
+
+    /** II./ Tab lấy hình ảnh góc mặt
+     *
+     * Cấu trúc chính:
+     * 1. Xử lý hảnh ảnh (F)
+     * 2. Tạo canvas (đường hướng dẫn) (C)
+     * 3. Thông báo (N)
+     * 4. Chụp hình (I)
+     * Phụ:
+     * 1. Quản lý camera (Cam)
+     * 2. Quality (Q)
+     * */
+
     /**
-     * On init
+     * ################################################################################################
+     * FUNCTION   :
+     * DESCRIPTION:
+     *
+     * ------------------------------------------------------------------------------------------------
+     * CHỨC NĂNG: 1. Xử lý hảnh ảnh (F)
+     * MÔ TẢ    :
+     *
+     * Tham khảo: https://google.github.io/mediapipe/solutions/face_mesh.html
+     *
+     * (F1): Khởi tạo facemesh với [maxNumFaces] tối đa 2 khuôn mặt. Mục địch để nếu nhận diện nhiều hơn
+     * 1 khuôn mặt thì sẽ thông báo tới người dùng [MOREFACE]
+     * (F2): Khởi tạo camera nhận ảnh từ khung hình và sử lý tại [onResults]
+     * (F3): Dữ liệu trả về [x], [y], [z] tương ứng với 4 góc mặt, [centerFace], [topFace], [bottomFace],
+     * [leftFace], [rightFace] tương ứng với các điểm đặt biệt trên khuôn mặt. [isMoreFace] cho biết
+     * có nhiều hơn 1 khuôn mặt nhận diện được.
+     * ################################################################################################
      */
+
+    /**(F3)*/
+    x: number = 0
+    y: number = 0
+    z: number = 0
+
+    centerFace = {x: 0, y: 0}
+    topFace = {x: 0, y: 0}
+    bottomFace = {x: 0, y: 0}
+    leftFace = {x: 0, y: 0}
+    rightFace = {x: 0, y: 0}
+
+    isMoreFace = false
+
+    // Hàm xử lý hình ảnh nhận được.
+    onResults(results, t) {
+        // console.log("result: ")
+        // console.log(results)
+        if (results.multiFaceLandmarks.length > 1) {
+            this.isMoreFace = true
+        } else {
+            this.isMoreFace = false
+            if (results.multiFaceLandmarks) {
+                for (const landmarks of results.multiFaceLandmarks) {
+                    t.centerFace =
+                        {
+                            x: landmarks[1].x * t.WIDTH,
+                            y: landmarks[1].y * t.HEIGHT
+                        }
+
+                    t.topFace =
+                        {
+                            x: landmarks[10].x * t.WIDTH,
+                            y: landmarks[10].y * t.HEIGHT
+                        }
+
+                    t.bottomFace =
+                        {
+                            x: landmarks[152].x * t.WIDTH,
+                            y: landmarks[152].y * t.HEIGHT
+                        }
+
+                    t.leftFace =
+                        {
+                            x: landmarks[234].x * t.WIDTH,
+                            y: landmarks[234].y * t.HEIGHT
+                        }
+
+                    t.rightFace =
+                        {
+                            x: landmarks[454].x * t.WIDTH,
+                            y: landmarks[454].y * t.HEIGHT
+                        }
+
+                }
+            } else {
+                t.centerFace = {x: 0, y: 0}
+                t.topFace = {x: 0, y: 0}
+                t.bottomFace = {x: 0, y: 0}
+                t.leftFace = {x: 0, y: 0}
+                t.rightFace = {x: 0, y: 0}
+            }
+            if (results.multiFaceGeometry) {
+                for (const facegeometry of results.multiFaceGeometry) {
+                    // console.log(facegeometry)
+                    const pt_matrix = facegeometry.getPoseTransformMatrix().getPackedDataList();
+                    const pt_matrix_three_js_format = new THREE.Matrix4().fromArray(pt_matrix);
+                    const euler_angles = new THREE.Euler().setFromRotationMatrix(pt_matrix_three_js_format, 'XYZ');
+                    const x = Math.round(THREE.MathUtils.radToDeg(euler_angles['x'])); //x
+                    const y = Math.round(THREE.MathUtils.radToDeg(euler_angles['y'])); //y
+                    const z = Math.round(THREE.MathUtils.radToDeg(euler_angles['z'])); //z
+
+                    // console.log(x)
+                    // console.log(y)
+                    // console.log(z)
+
+                    t.x = x
+                    t.y = y
+                    t.z = z
+
+                    // // const element = document.getElementById("canvas1");
+                    // // if (element) {
+                    // //     element.remove();
+                    // // }
+                    // // var canvas = document.createElement('canvas')
+                    // // canvas.id = "canvas1"
+                    // // var ctxStatic = canvas.getContext('2d')
+                    // t.ctxStatic.canvas.width = 640;
+                    // t.ctxStatic.canvas.height = 480;
+                    // const circleWidth = t.ctxStatic.canvas.width < t.ctxStatic.canvas.height ? t.ctxStatic.canvas.width : t.ctxStatic.canvas.height
+                    // const radius = circleWidth / 2
+                    // const circleCenter = {x: t.ctxStatic.canvas.width / 2, y: t.ctxStatic.canvas.height / 2}
+                    // t.ctxStatic.lineWidth = 3;
+                    // t.ctxStatic.strokeStyle = "red";
+                    // t.ctxStatic.beginPath();
+                    // t.ctxStatic.moveTo(circleCenter.x,
+                    //     circleCenter.y - radius);
+                    // t.ctxStatic.quadraticCurveTo(
+                    //     // detection.landmarks.positions[29].x,
+                    //     // detection.landmarks.positions[29].y,
+                    //     circleCenter.x + y * 3,
+                    //     circleCenter.y + x * 3,
+                    //     circleCenter.x,
+                    //     circleCenter.y + radius);
+                    // t.ctxStatic.stroke();
+                    //
+                    // t.ctxStatic.beginPath();
+                    // t.ctxStatic.moveTo(circleCenter.x - radius,
+                    //     circleCenter.y);
+                    // t.ctxStatic.quadraticCurveTo(
+                    //     // detection.landmarks.positions[29].x,
+                    //     // detection.landmarks.positions[29].y,
+                    //     circleCenter.x + y * 3,
+                    //     circleCenter.y + x * 3,
+                    //     circleCenter.x + radius,
+                    //     circleCenter.y);
+                    // t.ctxStatic.stroke();
+                    // // document.getElementById("videoElement").appendChild(canvas);
+                }
+            } else {
+                t.x = 0
+                t.y = 0
+                t.z = 0
+            }
+        }
+    };
 
     public faceMesh: FaceMesh;
     public camera
 
-
-
     async ngOnInit(): Promise<void> {
+        /**(Cam1)*/
         await this.onFindDevice()
 
         this.setDefault()
@@ -251,12 +435,12 @@ export class AddComponent implements OnInit {
             }
         }
 
+        /**(F1)*/
         this.faceMesh = new FaceMesh({
             locateFile: (file) => {
                 return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
             },
         });
-
         this.faceMesh.setOptions({
             maxNumFaces: 2,
             enableFaceGeometry: true,
@@ -264,10 +448,9 @@ export class AddComponent implements OnInit {
             minDetectionConfidence: 0.50,
             minTrackingConfidence: 0.50
         });
-
         this.faceMesh.onResults((r) => this.onResults(r, this));
 
-
+        /**(F2)*/
         this.camera = new cam.Camera(this.video.nativeElement, {
             onFrame: async () => {
                 await this.faceMesh.send({image: this.video.nativeElement});
@@ -276,7 +459,6 @@ export class AddComponent implements OnInit {
             height: this.HEIGHT,
         });
         await this.camera.start();
-
 
 
         // console.log('loading mobilenet model...');
@@ -338,7 +520,7 @@ export class AddComponent implements OnInit {
         //     }
 
 
-//                     const detection = await faceapi.detectSingleFace(this.video.nativeElement,
+        //                     const detection = await faceapi.detectSingleFace(this.video.nativeElement,
 //                         new faceapi.TinyFaceDetectorOptions()
 //                     ).withFaceLandmarks().withFaceExpressions()
 //                     // console.log(detection)
@@ -484,10 +666,33 @@ export class AddComponent implements OnInit {
 //         })
 
 
+        /**
+         * ################################################################################################
+         * FUNCTION   :
+         * DESCRIPTION:
+         *
+         * ------------------------------------------------------------------------------------------------
+         * CHỨC NĂNG: 2. Tạo canvas (C)
+         * MÔ TẢ    :
+         *
+         * Tham khảo: https://www.w3schools.com/tags/ref_canvas.asp
+         *
+         * (C1): Khởi tạo [ctxStatic] để vẽ hình ảnh cố định như đường xanh dương, và khung mờ. [ctxDynamic]
+         * dừng để vẽ đường đỏ chạy theo góc mặt. [ctxImage] sử dụng để chụp ảnh.
+         * (C2): Cài đặt chiều dài chiều rộng cho canvas
+         * (C3): Vẽ [ctxStatic]: phụ thuộc vào [type] để vẽ các đường xanh dương khác nhau. ([tupe] là trạng
+         * thái vd: CENTER, LEFT, DONE,...
+         * (C4): Trong vòng lặp setInterval, nếu [isOpenCamera] true tức camera được mở, vẽ đường dẫn màu đỏ
+         * [ctxDynamic] theo tọa độ [x], [y] trả về từ (F3)
+         * (C5): Kiểm tra khuôn mặt có trong khung hình hay không.
+         * ################################################################################################
+         */
+        /**(C1)*/
         this.ctxStatic = this.canvasStatic.nativeElement.getContext('2d');
         this.ctxDynamic = this.canvasDynamic.nativeElement.getContext('2d');
         this.ctxImage = this.canvasImage.nativeElement.getContext('2d');
         this.video.nativeElement.addEventListener('play', async () => {
+            /**(C2)*/
             this.canvasStatic.nativeElement.width = this.video.nativeElement.width
             this.canvasStatic.nativeElement.height = this.video.nativeElement.height
 
@@ -499,6 +704,7 @@ export class AddComponent implements OnInit {
             this.canvasImage.nativeElement.height = this.video.nativeElement.height > this.video.nativeElement.width ?
                 this.video.nativeElement.width : this.video.nativeElement.height
 
+            /**(C3)*/
             this.autoChangeCanvasStatic()
 
             setInterval(async () => {
@@ -508,8 +714,8 @@ export class AddComponent implements OnInit {
                     this.canvasDynamic.nativeElement.height)
 
                 if (this.isOpenCamera) {
-
                     if (this.type != "DONE") {
+                        /**(C4)*/
                         // Đường màu đỏ
                         // Đường dọc
                         this.ctxDynamic.lineWidth = 3;
@@ -566,14 +772,32 @@ export class AddComponent implements OnInit {
                     //     5,
                     //     5);
 
+                    /**
+                     * ################################################################################################
+                     * FUNCTION   :
+                     * DESCRIPTION:
+                     *
+                     * ------------------------------------------------------------------------------------------------
+                     * CHỨC NĂNG: 3. Thông báo (N)
+                     * MÔ TẢ    :
+                     *
+                     * Tham khảo:
+                     *
+                     * (N1): Kiểm tra khuôn mặt có trong khung hình hay không.
+                     * (N2): Nếu [x], [y] lệch khỏi tọa độ thỏa mãn thì sẽ hiển thị thông báo. Trong đó [minX], [maxX]
+                     * là giới hạn của [x], [minY], [maxY] là giới hạn của y.
+                     * (N3): Khi tọa độ thỏa mãn sẽ tiến hành delay 0,5s rồi bắt đầu chụp hình.
+                     * (N4): Sau khi chụp hình xong sẽ thay đổi thể loại [type] để hiển thị thông báo mới.
+                     * ################################################################################################
+                     */
 
+                    /**(N1)*/
                     let isInFrame = this.inTheFrame(this.topFace.x, this.topFace.y)
                         && this.inTheFrame(this.bottomFace.x, this.bottomFace.y)
                         && this.inTheFrame(this.leftFace.x, this.leftFace.y)
                         && this.inTheFrame(this.rightFace.x, this.rightFace.y)
-
-
                     if (isInFrame && this.type != "DONE") {
+                        /**(N2)*/
                         for (let i = 0; i < this.faceImages.length; i++) {
                             if (this.faceImages[i].type == this.type && !this.faceImages[i].isCapture) {
 
@@ -594,6 +818,7 @@ export class AddComponent implements OnInit {
                                     type: this.warning
                                 }
 
+                                /**(N3)*/
                                 if (this.faceImages[i].minX < this.x && this.faceImages[i].maxX > this.x
                                     && this.faceImages[i].minY < this.y && this.faceImages[i].maxY > this.y
                                 ) {
@@ -605,9 +830,13 @@ export class AddComponent implements OnInit {
                                         this.notifyCamera = {detail: "Giữ nguyên khuôn mặt", type: this.success}
                                     }
                                     if (this.isGetImageCallback) {
+                                        /**(I1)*/
                                         const faceImage = this.getFaceImage()
+                                        /**(I2)*/
                                         this.capture(i, faceImage.x, faceImage.y, faceImage.w, faceImage.h)
+                                        /**(I3)*/
                                         this.faceImages[i].isCapture = true
+                                        /**(N4)*/
                                         this.autoChangeType()
                                         this.autoChangeCanvasStatic()
                                         /**(6)*/
@@ -622,18 +851,12 @@ export class AddComponent implements OnInit {
                         }
                     } else {
                         this.stopTimer()
-                    }
-
-                    if (isInFrame && this.type != "DONE") {
-
-                    } else {
                         if (this.type == "DONE") {
                             this.notifyCamera = {detail: this.CAPTURDONE, type: this.success}
                         } else {
                             this.notifyCamera = {detail: this.FACEINCIRCLE, type: this.danger}
                         }
                     }
-
                     if (this.isMoreFace) {
                         this.notifyCamera = {detail: this.MOREFACE, type: this.danger}
                     }
@@ -656,6 +879,255 @@ export class AddComponent implements OnInit {
 
     }
 
+    @ViewChild('canvasStatic', {static: true})
+    canvasStatic: ElementRef<HTMLCanvasElement>;
+
+    private ctxStatic: CanvasRenderingContext2D;
+
+    @ViewChild('canvasDynamic', {static: true})
+    canvasDynamic: ElementRef<HTMLCanvasElement>;
+
+    private ctxDynamic: CanvasRenderingContext2D;
+
+    @ViewChild('canvasImage', {static: true})
+    canvasImage: ElementRef<HTMLCanvasElement>;
+
+    private ctxImage: CanvasRenderingContext2D;
+
+
+    //Sử dụng đúng tỉ lệ khung hình của cam để không
+    // bị lệch canvas
+    WIDTH = 640;
+    HEIGHT = 480;
+
+    circleWidth = this.WIDTH < this.HEIGHT ? this.WIDTH : this.HEIGHT
+    radius = this.circleWidth / 2
+
+    circleCenter = {x: this.WIDTH / 2, y: this.HEIGHT / 2}
+
+    drawCanvasStatic(x, y) {
+        // Đường màu Xanh
+        // Đường dọc
+        this.ctxStatic.lineWidth = 3;
+        this.ctxStatic.strokeStyle = "blue";
+        this.ctxStatic.beginPath();
+        this.ctxStatic.moveTo(this.circleCenter.x,
+            this.circleCenter.y - this.radius);
+        this.ctxStatic.quadraticCurveTo(
+            this.circleCenter.x + y,
+            this.circleCenter.y + x,
+            this.circleCenter.x,
+            this.circleCenter.y + this.radius);
+        this.ctxStatic.stroke();
+
+        // Đường ngang
+        this.ctxStatic.beginPath();
+        this.ctxStatic.moveTo(this.circleCenter.x - this.radius,
+            this.circleCenter.y);
+        this.ctxStatic.quadraticCurveTo(
+            this.circleCenter.x + y,
+            this.circleCenter.y + x,
+            this.circleCenter.x + this.radius,
+            this.circleCenter.y);
+        this.ctxStatic.stroke();
+    }
+
+    /**(C3)*/
+    autoChangeCanvasStatic() {
+        this.ctxStatic.clearRect(0, 0, this.canvasStatic.nativeElement.width,
+            this.canvasStatic.nativeElement.height)
+        //circle
+        this.ctxStatic.fillStyle = "rgba(255, 255, 255, 0.7)";
+        this.ctxStatic.beginPath();
+        this.ctxStatic.arc(this.circleCenter.x,
+            this.circleCenter.y,
+            this.radius,
+            0,
+            2 * Math.PI);
+
+        //blur
+        this.ctxStatic.rect(this.WIDTH, 0, -this.WIDTH, this.HEIGHT);
+        this.ctxStatic.fill();
+        for (let i = 0; i < this.faceImages.length; i++) {
+            if (this.type == this.faceImages[i].type) {
+                this.drawCanvasStatic(
+                    (this.faceImages[i].maxX + this.faceImages[i].minX) / 2 * 3,
+                    (this.faceImages[i].maxY + this.faceImages[i].minY) / 2 * 3)
+            }
+        }
+        if (this.type == "DONE") {
+            this.ctxStatic.clearRect(0, 0, this.canvasStatic.nativeElement.width,
+                this.canvasStatic.nativeElement.height)
+            this.ctxStatic.fillStyle = "rgba(255, 255, 255, 0.8)";
+            this.ctxStatic.beginPath();
+            //blur
+            this.ctxStatic.rect(this.WIDTH, 0, -this.WIDTH, this.HEIGHT);
+            this.ctxStatic.fill();
+        }
+
+    }
+
+
+    /**
+     * ################################################################################################
+     * FUNCTION   :
+     * DESCRIPTION:
+     *
+     * ------------------------------------------------------------------------------------------------
+     * CHỨC NĂNG: 4. Chụp hình (I)
+     * MÔ TẢ    :
+     *
+     * Tham khảo:
+     *
+     * (I1): Lấy tọa độ ảnh mặt theo (x,y, độ dài hình, độ cao hình)
+     * (I2): Chụp hình: Hình ảnh sẽ được chuyển thành canvas và lưu lại vào [data] và [flipData]. Do hình
+     * ảnh hiển thị đã được flip trên html nên data sẽ là ảnh flip của hình ảnh chụp được. flip là hình ảnh
+     * sẽ được hiển thị giống như soi gương (mirror image)
+     * (I3): Chuyển trạng thái của ảnh thành đã chụp [isCapture] = true
+     * ################################################################################################
+     */
+    // captures: string[] = [];
+    // isCaptured: boolean;
+    capture(i, x, y, w, h) {
+        this.drawFlipImageToCanvas(this.video.nativeElement, x, y, w, h);
+        // this.captures.push(this.canvasImage.nativeElement.toDataURL("image/png"));
+        this.faceImages[i].data = this.canvasImage.nativeElement.toDataURL("image/png");
+        this.drawImageToCanvas(this.video.nativeElement, x, y, w, h);
+        this.faceImages[i].flipData = this.canvasImage.nativeElement.toDataURL("image/png");
+        // this.captures.push(this.canvasImage.nativeElement.toDataURL("image/png"));
+        // this.isCaptured = true;
+    }
+
+    /**(I1)*/
+    // getFaceImage(x, y, r) {
+    //     return {
+    //         x: Math.floor(x - r),
+    //         y: Math.floor(y - r),
+    //         w: r * 2,
+    //         h: r * 2
+    //     }
+    // }
+    getFaceImage() {
+        let w = this.getWidthFace()
+        let h = this.getHeightFace()
+        return {
+            x: Math.floor(this.getPontFace().x - w),
+            y: Math.floor(this.getPontFace().y - h),
+            w: w * 2,
+            h: h * 2
+        }
+    }
+
+    // Tính độ rộng mặt: d = Căn bậc 2 của tổng (y2-y1) bình + (x2 - x1) bình
+    // getWidthFace(x1, y1, x2, y2) {
+    //     return Math.floor(Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2)))
+    // }
+    getWidthFace() {
+        return Math.floor(Math.sqrt(Math.pow(this.leftFace.y - this.rightFace.y, 2)
+            + Math.pow(this.leftFace.x - this.rightFace.x, 2)))
+    }
+
+    getHeightFace() {
+        return Math.floor(Math.sqrt(Math.pow(this.topFace.y - this.bottomFace.y, 2)
+            + Math.pow(this.topFace.x - this.bottomFace.x, 2)))
+    }
+
+    // Tìm tâm điểm mặt: Lấy trung điểm của 2 điểm xa nhất mặt.
+    // getPontFace(x1, y1, x2, y2) {
+    //     return {x: Math.floor((x1 + x2) / 2), y: Math.floor((y1 + y2) / 2)}
+    // }
+    getPontFace() {
+        return {
+            x: Math.floor((this.leftFace.x + this.rightFace.x) / 2),
+            y: Math.floor((this.leftFace.y + this.rightFace.y) / 2)
+        }
+    }
+
+    /**(I2)*/
+    drawImageToCanvas(image: any, x, y, w, h) {
+        this.ctxImage.clearRect(0, 0, this.canvasImage.nativeElement.width,
+            this.canvasImage.nativeElement.height)
+        this.canvasImage.nativeElement
+            .getContext("2d")
+            .drawImage(image, x, y, w > h ? w : h, w > h ? w : h, 0, 0, this.WIDTH > this.HEIGHT ? this.WIDTH : this.HEIGHT, this.WIDTH > this.HEIGHT ? this.WIDTH : this.HEIGHT);
+    }
+
+    drawFlipImageToCanvas(image: any, x, y, w, h) {
+        this.ctxImage.clearRect(0, 0, this.canvasImage.nativeElement.width,
+            this.canvasImage.nativeElement.height)
+        // this.canvasImage.nativeElement
+        //     .getContext("2d").scale(-1,1);
+        const horizontal = true;
+        const vertical = false;
+        this.ctxImage.setTransform(
+            horizontal ? -1 : 1, 0, // set the direction of x axis
+            0, vertical ? -1 : 1,   // set the direction of y axis
+            0 + (horizontal ? (image.width > image.height ? image.height : image.width) : 0), // set the x origin
+            0 + (vertical ? (image.width > image.height ? image.height : image.width) : 0)   // set the y origin
+        );
+        this.ctxImage
+            .drawImage(image, x, y, w > h ? h : w, w > h ? h : w, 0, 0, this.WIDTH > this.HEIGHT ? this.HEIGHT : this.WIDTH, this.WIDTH > this.HEIGHT ? this.HEIGHT : this.WIDTH);
+        this.ctxImage.restore();
+
+        // this.mirrorImage(
+        //     this.ctxImage,
+        //     image,
+        //     0,
+        //     0,
+        //     true,
+        //     false,
+        // );
+        // scaleX by -1; this "trick" flips horizontally
+
+
+        // draw the img
+        // no need for x,y since we've already translated
+        // ctx.drawImage(img,0,0);
+    }
+
+    // ctx : the context on which to draw the mirrored image
+    // image : the image to mirror
+    // x,y : the top left of the rendered image
+    // horizontal : boolean if true mirror along X
+    // vertical : boolean if true mirror along y
+    mirrorImage(
+        ctx,
+        image,
+        x = 0,
+        y = 0,
+        horizontal = false,
+        vertical = false,
+    ) {
+        ctx.save();  // save the current canvas state
+        ctx.setTransform(
+            horizontal ? -1 : 1, 0, // set the direction of x axis
+            0, vertical ? -1 : 1,   // set the direction of y axis
+            x + (horizontal ? image.width : 0), // set the x origin
+            y + (vertical ? image.height : 0)   // set the y origin
+        );
+        ctx.drawImage(image, 0, 0,);
+        ctx.restore(); // restore the state as it was when this function was called
+    }
+
+
+    /**
+     * ################################################################################################
+     * DESCRIPTION:
+     *
+     * ------------------------------------------------------------------------------------------------
+     * MÔ TẢ    :
+     *
+     * [minX], [maxX]: giới hạn tọa độ [x] vd: [x] chạy từ  - 12 đến 12, tương tự với [minY], [maxY]
+     * [type]: Loại trạng thái chụp hình
+     * [isCapture]: Cho biết hình này được được chụp hay chưa.
+     * [data]: Ảnh mặt
+     * [flipData]: Ảnh mặt đảo chiều (Ảnh qua gương)
+     * [error]: Mã lỗi, [isQualified], [isSamePerson]: thông báo chất lượng hình i kiểm tra quality.
+     * Các biến này được thay đổi khi check quality
+     * ################################################################################################
+     */
+    distance = 4 //Khoảng cách để nhận diện
+    faceImages = [] // Lưu tất cả thông tin và dữ liệu hình ảnh của các trạng thái. ([type])
     setDefault() {
         this.faceImages = [
             {
@@ -741,11 +1213,6 @@ export class AddComponent implements OnInit {
         this.type = this.faceImages[0].type
     }
 
-    reCaptureAll() {
-        this.setDefault()
-        this.autoChangeCanvasStatic()
-    }
-
     inTheFrame(x, y) {
         return this.circleCenter.x - this.radius < x
             && x < this.circleCenter.x + this.radius
@@ -774,319 +1241,7 @@ export class AddComponent implements OnInit {
     NODEIVCE = "Không thể tìm thấy camera"
     MOREFACE = "Có nhiều hơn 1 khuôn mặt trong khung hình"
 
-    drawCanvasStatic(x, y) {
-        // Đường màu Xanh
-        // Đường dọc
-        this.ctxStatic.lineWidth = 3;
-        this.ctxStatic.strokeStyle = "blue";
-        this.ctxStatic.beginPath();
-        this.ctxStatic.moveTo(this.circleCenter.x,
-            this.circleCenter.y - this.radius);
-        this.ctxStatic.quadraticCurveTo(
-            this.circleCenter.x + y,
-            this.circleCenter.y + x,
-            this.circleCenter.x,
-            this.circleCenter.y + this.radius);
-        this.ctxStatic.stroke();
-
-        // Đường ngang
-        this.ctxStatic.beginPath();
-        this.ctxStatic.moveTo(this.circleCenter.x - this.radius,
-            this.circleCenter.y);
-        this.ctxStatic.quadraticCurveTo(
-            this.circleCenter.x + y,
-            this.circleCenter.y + x,
-            this.circleCenter.x + this.radius,
-            this.circleCenter.y);
-        this.ctxStatic.stroke();
-    }
-
-    autoChangeCanvasStatic() {
-        this.ctxStatic.clearRect(0, 0, this.canvasStatic.nativeElement.width,
-            this.canvasStatic.nativeElement.height)
-        //circle
-        this.ctxStatic.fillStyle = "rgba(255, 255, 255, 0.7)";
-        this.ctxStatic.beginPath();
-        this.ctxStatic.arc(this.circleCenter.x,
-            this.circleCenter.y,
-            this.radius,
-            0,
-            2 * Math.PI);
-
-        //blur
-        this.ctxStatic.rect(this.WIDTH, 0, -this.WIDTH, this.HEIGHT);
-        this.ctxStatic.fill();
-        for (let i = 0; i < this.faceImages.length; i++) {
-            if (this.type == this.faceImages[i].type) {
-                this.drawCanvasStatic(
-                    (this.faceImages[i].maxX + this.faceImages[i].minX) / 2 * 3,
-                    (this.faceImages[i].maxY + this.faceImages[i].minY) / 2 * 3)
-            }
-        }
-        if (this.type == "DONE") {
-            this.ctxStatic.clearRect(0, 0, this.canvasStatic.nativeElement.width,
-                this.canvasStatic.nativeElement.height)
-            this.ctxStatic.fillStyle = "rgba(255, 255, 255, 0.8)";
-            this.ctxStatic.beginPath();
-            //blur
-            this.ctxStatic.rect(this.WIDTH, 0, -this.WIDTH, this.HEIGHT);
-            this.ctxStatic.fill();
-        }
-
-    }
-
-    x: number = 0
-    y: number = 0
-    z: number = 0
-
-    centerFace = {x: 0, y: 0}
-    topFace = {x: 0, y: 0}
-    bottomFace = {x: 0, y: 0}
-    leftFace = {x: 0, y: 0}
-    rightFace = {x: 0, y: 0}
-
-    distance = 4
-    faceImages = []
-
-isMoreFace =  false
-
-    // Hàm xử lý hình ảnh nhận được.
-    onResults(results, t) {
-        // console.log("result: ")
-        // console.log(results)
-        if(results.multiFaceLandmarks.length>1){
-            this.isMoreFace = true
-        } else {
-            this.isMoreFace = false
-            if (results.multiFaceLandmarks) {
-                for (const landmarks of results.multiFaceLandmarks) {
-                    t.centerFace =
-                        {
-                            x: landmarks[1].x * t.WIDTH,
-                            y: landmarks[1].y * t.HEIGHT
-                        }
-
-                    t.topFace =
-                        {
-                            x: landmarks[10].x * t.WIDTH,
-                            y: landmarks[10].y * t.HEIGHT
-                        }
-
-                    t.bottomFace =
-                        {
-                            x: landmarks[152].x * t.WIDTH,
-                            y: landmarks[152].y * t.HEIGHT
-                        }
-
-                    t.leftFace =
-                        {
-                            x: landmarks[234].x * t.WIDTH,
-                            y: landmarks[234].y * t.HEIGHT
-                        }
-
-                    t.rightFace =
-                        {
-                            x: landmarks[454].x * t.WIDTH,
-                            y: landmarks[454].y * t.HEIGHT
-                        }
-
-                }
-            } else {
-                t.centerFace = {x: 0, y: 0}
-                t.topFace = {x: 0, y: 0}
-                t.bottomFace = {x: 0, y: 0}
-                t.leftFace = {x: 0, y: 0}
-                t.rightFace = {x: 0, y: 0}
-            }
-            if (results.multiFaceGeometry) {
-                for (const facegeometry of results.multiFaceGeometry) {
-                    // console.log(facegeometry)
-                    const pt_matrix = facegeometry.getPoseTransformMatrix().getPackedDataList();
-                    const pt_matrix_three_js_format = new THREE.Matrix4().fromArray(pt_matrix);
-                    const euler_angles = new THREE.Euler().setFromRotationMatrix(pt_matrix_three_js_format, 'XYZ');
-                    const x = Math.round(THREE.MathUtils.radToDeg(euler_angles['x'])); //x
-                    const y = Math.round(THREE.MathUtils.radToDeg(euler_angles['y'])); //y
-                    const z = Math.round(THREE.MathUtils.radToDeg(euler_angles['z'])); //z
-
-                    // console.log(x)
-                    // console.log(y)
-                    // console.log(z)
-
-                    t.x = x
-                    t.y = y
-                    t.z = z
-
-                    // // const element = document.getElementById("canvas1");
-                    // // if (element) {
-                    // //     element.remove();
-                    // // }
-                    // // var canvas = document.createElement('canvas')
-                    // // canvas.id = "canvas1"
-                    // // var ctxStatic = canvas.getContext('2d')
-                    // t.ctxStatic.canvas.width = 640;
-                    // t.ctxStatic.canvas.height = 480;
-                    // const circleWidth = t.ctxStatic.canvas.width < t.ctxStatic.canvas.height ? t.ctxStatic.canvas.width : t.ctxStatic.canvas.height
-                    // const radius = circleWidth / 2
-                    // const circleCenter = {x: t.ctxStatic.canvas.width / 2, y: t.ctxStatic.canvas.height / 2}
-                    // t.ctxStatic.lineWidth = 3;
-                    // t.ctxStatic.strokeStyle = "red";
-                    // t.ctxStatic.beginPath();
-                    // t.ctxStatic.moveTo(circleCenter.x,
-                    //     circleCenter.y - radius);
-                    // t.ctxStatic.quadraticCurveTo(
-                    //     // detection.landmarks.positions[29].x,
-                    //     // detection.landmarks.positions[29].y,
-                    //     circleCenter.x + y * 3,
-                    //     circleCenter.y + x * 3,
-                    //     circleCenter.x,
-                    //     circleCenter.y + radius);
-                    // t.ctxStatic.stroke();
-                    //
-                    // t.ctxStatic.beginPath();
-                    // t.ctxStatic.moveTo(circleCenter.x - radius,
-                    //     circleCenter.y);
-                    // t.ctxStatic.quadraticCurveTo(
-                    //     // detection.landmarks.positions[29].x,
-                    //     // detection.landmarks.positions[29].y,
-                    //     circleCenter.x + y * 3,
-                    //     circleCenter.y + x * 3,
-                    //     circleCenter.x + radius,
-                    //     circleCenter.y);
-                    // t.ctxStatic.stroke();
-                    // // document.getElementById("videoElement").appendChild(canvas);
-                }
-            } else {
-                t.x = 0
-                t.y = 0
-                t.z = 0
-            }
-        }
-    };
-
-
-    // Tính độ rộng mặt: d = Căn bậc 2 của tổng (y2-y1) bình + (x2 - x1) bình
-    // getWidthFace(x1, y1, x2, y2) {
-    //     return Math.floor(Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2)))
-    // }
-    getWidthFace() {
-        return Math.floor(Math.sqrt(Math.pow(this.leftFace.y - this.rightFace.y, 2)
-            + Math.pow(this.leftFace.x - this.rightFace.x, 2)))
-    }
-
-    getHeightFace() {
-        return Math.floor(Math.sqrt(Math.pow(this.topFace.y - this.bottomFace.y, 2)
-            + Math.pow(this.topFace.x - this.bottomFace.x, 2)))
-    }
-
-    // Tìm tâm điểm mặt: Lấy trung điểm của 2 điểm xa nhất mặt.
-    // getPontFace(x1, y1, x2, y2) {
-    //     return {x: Math.floor((x1 + x2) / 2), y: Math.floor((y1 + y2) / 2)}
-    // }
-    getPontFace() {
-        return {
-            x: Math.floor((this.leftFace.x + this.rightFace.x) / 2),
-            y: Math.floor((this.leftFace.y + this.rightFace.y) / 2)
-        }
-    }
-
-    // getFaceImage(x, y, r) {
-    //     return {
-    //         x: Math.floor(x - r),
-    //         y: Math.floor(y - r),
-    //         w: r * 2,
-    //         h: r * 2
-    //     }
-    // }
-    getFaceImage() {
-        let w = this.getWidthFace()
-        let h = this.getHeightFace()
-        return {
-            x: Math.floor(this.getPontFace().x - w),
-            y: Math.floor(this.getPontFace().y - h),
-            w: w * 2,
-            h: h * 2
-        }
-    }
-
-    // captures: string[] = [];
-    // isCaptured: boolean;
-
-    capture(i, x, y, w, h) {
-        this.drawFlipImageToCanvas(this.video.nativeElement, x, y, w, h);
-        // this.captures.push(this.canvasImage.nativeElement.toDataURL("image/png"));
-        this.faceImages[i].data = this.canvasImage.nativeElement.toDataURL("image/png");
-        this.drawImageToCanvas(this.video.nativeElement, x, y, w, h);
-        this.faceImages[i].flipData = this.canvasImage.nativeElement.toDataURL("image/png");
-        // this.captures.push(this.canvasImage.nativeElement.toDataURL("image/png"));
-        // this.isCaptured = true;
-    }
-
-    drawImageToCanvas(image: any, x, y, w, h) {
-        this.ctxImage.clearRect(0, 0, this.canvasImage.nativeElement.width,
-            this.canvasImage.nativeElement.height)
-        this.canvasImage.nativeElement
-            .getContext("2d")
-            .drawImage(image, x, y, w > h ? w : h, w > h ? w : h, 0, 0, this.WIDTH > this.HEIGHT ? this.WIDTH : this.HEIGHT, this.WIDTH > this.HEIGHT ? this.WIDTH : this.HEIGHT);
-    }
-
-    drawFlipImageToCanvas(image: any, x, y, w, h) {
-        this.ctxImage.clearRect(0, 0, this.canvasImage.nativeElement.width,
-            this.canvasImage.nativeElement.height)
-        // this.canvasImage.nativeElement
-        //     .getContext("2d").scale(-1,1);
-        const horizontal = true;
-        const vertical = false;
-        this.ctxImage.setTransform(
-            horizontal ? -1 : 1, 0, // set the direction of x axis
-            0, vertical ? -1 : 1,   // set the direction of y axis
-            0 + (horizontal ? (image.width > image.height ? image.height : image.width) : 0), // set the x origin
-            0 + (vertical ? (image.width > image.height ? image.height : image.width) : 0)   // set the y origin
-        );
-        this.ctxImage
-            .drawImage(image, x, y, w > h ? h : w, w > h ? h : w, 0, 0, this.WIDTH > this.HEIGHT ? this.HEIGHT : this.WIDTH, this.WIDTH > this.HEIGHT ? this.HEIGHT : this.WIDTH);
-        this.ctxImage.restore();
-
-        // this.mirrorImage(
-        //     this.ctxImage,
-        //     image,
-        //     0,
-        //     0,
-        //     true,
-        //     false,
-        // );
-        // scaleX by -1; this "trick" flips horizontally
-
-
-        // draw the img
-        // no need for x,y since we've already translated
-        // ctx.drawImage(img,0,0);
-    }
-
-
-    // ctx : the context on which to draw the mirrored image
-    // image : the image to mirror
-    // x,y : the top left of the rendered image
-    // horizontal : boolean if true mirror along X
-    // vertical : boolean if true mirror along y
-    mirrorImage(
-        ctx,
-        image,
-        x = 0,
-        y = 0,
-        horizontal = false,
-        vertical = false,
-    ) {
-        ctx.save();  // save the current canvas state
-        ctx.setTransform(
-            horizontal ? -1 : 1, 0, // set the direction of x axis
-            0, vertical ? -1 : 1,   // set the direction of y axis
-            x + (horizontal ? image.width : 0), // set the x origin
-            y + (vertical ? image.height : 0)   // set the y origin
-        );
-        ctx.drawImage(image, 0, 0,);
-        ctx.restore(); // restore the state as it was when this function was called
-    }
-
+    /**(N4)*/
     autoChangeType() {
         let isDone = false;
         for (let i = 0; i < this.faceImages.length; i++) {
@@ -1103,39 +1258,10 @@ isMoreFace =  false
         }
     }
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next();
-        this._unsubscribeAll.complete();
-        this.onStop()
-    }
 
-    getBirthDay($event: string) {
-        console.log("$event: " + $event)
-        this.birthDay = $event
-    }
-
-
-    CACHE_KEY = 'httpCache'
-
-    saveImageInCache($event) {
-        localStorage[this.CACHE_KEY] = $event
-        this.uploadImage = localStorage[this.CACHE_KEY]
-    }
-
-    uploadImage(event: any) {
-        if (event.target.files && event.target.files[0]) {
-            let reader = new FileReader();
-
-            reader.onload = (event: any) => {
-                this.faceImage = event.target.result;
-            };
-            this.faceImageFile = event.target.files[0]
-            reader.readAsDataURL(event.target.files[0]);
-        }
+    reCaptureAll() {
+        this.setDefault()
+        this.autoChangeCanvasStatic()
     }
 
     reCapture(type) {
@@ -1153,10 +1279,6 @@ isMoreFace =  false
         this.autoChangeCanvasStatic()
     }
 
-    removeImage() {
-        this.faceImage = null
-        this.faceImageFile = null
-    }
 
     // Camera
     // stream: any = null;
@@ -1216,13 +1338,30 @@ isMoreFace =  false
     //     console.log(this.previewImage);
     // }
 
-
     @ViewChild('video', {static: true}) video: ElementRef<HTMLVideoElement>;
 
-
+    /**
+     * ################################################################################################
+     * FUNCTION   :
+     * DESCRIPTION:
+     *
+     * ------------------------------------------------------------------------------------------------
+     * CHỨC NĂNG: Chức năng phụ - Quản lý camera (Cam)
+     * MÔ TẢ    :
+     *
+     * Tham khảo:
+     *
+     * (Cam1): Tìm kiếm các thiết bị ghi hình và lưu kết quả vào [devices], sẽ mặc định chọn thiết bị
+     * đầu tiên trong danh sách lưu vào [selectedDevice]
+     * (Cam2): Chọn camera sau đó khởi tạo lại camera với [selectedDevice] mới.
+     * (Cam3): Tắt camera, cần tắt đồng thời camera của module [this.camera] và camera của web. Tắt
+     * camera khi chuyển tab tại [ngOnDestroy]
+     * ################################################################################################
+     */
     selectedDevice = null
     devices = []
 
+    /**(Cam1)*/
     // Chọn nhiều cam: tham khảo constraints tại: https://webrtc.org/getting-started/media-devices
     async onFindDevice() {
         if (isPlatformBrowser(this._platform) && 'mediaDevices' in navigator) {
@@ -1243,6 +1382,13 @@ isMoreFace =  false
         }
     }
 
+    /**(Cam2)*/
+    async onSelectDevice(device) {
+        this.selectedDevice = device
+        await this.onStart()
+        // await this.camera.start();
+    }
+
     isOpenCamera = true
 
     async onStart() {
@@ -1255,7 +1401,7 @@ isMoreFace =  false
                 const _video = this.video.nativeElement;
                 _video.srcObject = ms;
                 // Delay 0,5 giây nhằm mục đích đảm bảo video đã khởi tạo trước khi play để detect mặt.
-                let timeLeft  = 1
+                let timeLeft = 1
                 let interval = setInterval(async () => {
                     if (timeLeft > 0) {
                         timeLeft--;
@@ -1265,15 +1411,16 @@ isMoreFace =  false
                         this.autoChangeCanvasStatic()
                         clearInterval(interval)
                     }
-                },500)
+                }, 500)
             });
         }
     }
 
-    async onSelectDevice(device) {
-        this.selectedDevice = device
-        await this.onStart()
-        // await this.camera.start();
+    /**(Cam2)*/
+    async onStop() {
+        await this.camera.stop();
+        this.stopBothVideoAndAudio(this.video.nativeElement.srcObject)
+        this.isOpenCamera = false
     }
 
     // stop both mic and camera
@@ -1285,59 +1432,12 @@ isMoreFace =  false
         });
     }
 
-    async onStop() {
-
-        await this.camera.stop();
-        this.stopBothVideoAndAudio(this.video.nativeElement.srcObject)
-        this.isOpenCamera = false
-
-
-        // navigator.getUserMedia({audio: false,   video: {
-        //             deviceId: this.cameraId,
-        //         },},
-        //     function(stream) {
-        //         // can also use getAudioTracks() or getVideoTracks()
-        //         var track = stream.getTracks()[0];  // if only one media track
-        //         // ...
-        //         console.log(track)
-        //         track.stop();
-        //     },
-        //     function(error){
-        //         console.log('getUserMedia() error', error);
-        //     });
+    ngOnDestroy(): void {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
+        this.onStop()
     }
-
-    @ViewChild('canvasStatic', {static: true})
-    canvasStatic: ElementRef<HTMLCanvasElement>;
-
-    private ctxStatic: CanvasRenderingContext2D;
-
-    @ViewChild('canvasDynamic', {static: true})
-    canvasDynamic: ElementRef<HTMLCanvasElement>;
-
-    private ctxDynamic: CanvasRenderingContext2D;
-
-    @ViewChild('canvasImage', {static: true})
-    canvasImage: ElementRef<HTMLCanvasElement>;
-
-    private ctxImage: CanvasRenderingContext2D;
-
-
-    @ViewChild('modalForm')
-    modalForm: ElementRef<HTMLCanvasElement>;
-
-    // @ViewChild('SweetAlertError')
-    // SweetAlertError: ElementRef<HTMLCanvasElement>;
-
-    //Sử dụng đúng tỉ lệ khung hình của cam để không
-    // bị lệch canvas
-    WIDTH = 640;
-    HEIGHT = 480;
-
-    circleWidth = this.WIDTH < this.HEIGHT ? this.WIDTH : this.HEIGHT
-    radius = this.circleWidth / 2
-
-    circleCenter = {x: this.WIDTH / 2, y: this.HEIGHT / 2}
 
 
     /**
@@ -1380,7 +1480,6 @@ isMoreFace =  false
      */
     isGetImageCallback: Boolean = false
     isRunningTimer: Boolean = false
-
     timeLeft: number = 1250;
     timer;
 
@@ -1411,8 +1510,25 @@ isMoreFace =  false
     }
 
 
+    /**
+     * ################################################################################################
+     * FUNCTION   :
+     * DESCRIPTION:
+     *
+     * ------------------------------------------------------------------------------------------------
+     * CHỨC NĂNG: Chức năng phụ - Quality (Cam)
+     * MÔ TẢ    :
+     *
+     * Tham khảo:
+     *
+     * (Q1): Gửi hình ảnh lên server để kiểm tra.
+     * (Q2): Dữ liệu trả về sẽ được lưu vào [faceImages] tại [error], [isSamePerson] và [isQualified]
+     * [faceImageType] của dữ liệu trả về tương ứng với [type], nhưng cấu trúc dữ liệu khác nhau cần
+     * biên dịch lại qua [compile]
+     * ################################################################################################
+     */
     isCheckQuality = false
-
+    /**(Q1)*/
     //Check quality
     async quality() {
 
@@ -1446,7 +1562,21 @@ isMoreFace =  false
             },
         )
     }
-
+    /**(Q2)*/
+    setQuality(res) {
+        res = this.compile(res)
+        for (let i = 0; i < res.length; i++) {
+            for (let j = 0; j < this.faceImages.length; j++) {
+                if (res[i].faceImageType == this.faceImages[j].type) {
+                    this.faceImages[j].error = res[i].error
+                    this.faceImages[j].isQualified = res[i].isQualified
+                    this.faceImages[j].isSamePerson = res[i].isSamePerson
+                }
+            }
+        }
+        // console.log("res2: ")
+        // console.log(this.faceImages)
+    }
     compile(res) {
         for (let i = 0; i < res.length; i++) {
             if (res[i].faceImageType == "Left") res[i].faceImageType = this.faceImages[2].type
@@ -1459,6 +1589,17 @@ isMoreFace =  false
         return res
     }
 
+
+    /**
+     * ################################################################################################
+     * DESCRIPTION:
+     *
+     * ------------------------------------------------------------------------------------------------
+     * MÔ TẢ    :
+     *
+     * Đọc dữ liệu trong [error], biên dịch và hiển thị ra màn hình
+     * ################################################################################################
+     */
     errorCompile = [
         {
             code: "001",
@@ -1501,7 +1642,6 @@ isMoreFace =  false
             detail: "Ảnh bị tối"
         },
     ]
-
     compileError(error) {
         let result = ""
         // console.log("error: ")
@@ -1519,20 +1659,6 @@ isMoreFace =  false
     }
 
 
-    setQuality(res) {
-        res = this.compile(res)
-        for (let i = 0; i < res.length; i++) {
-            for (let j = 0; j < this.faceImages.length; j++) {
-                if (res[i].faceImageType == this.faceImages[j].type) {
-                    this.faceImages[j].error = res[i].error
-                    this.faceImages[j].isQualified = res[i].isQualified
-                    this.faceImages[j].isSamePerson = res[i].isSamePerson
-                }
-            }
-        }
-        // console.log("res2: ")
-        // console.log(this.faceImages)
-    }
 
 }
 
