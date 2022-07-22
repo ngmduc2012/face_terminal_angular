@@ -1597,7 +1597,7 @@ export class AddComponent implements OnInit {
      * ------------------------------------------------------------------------------------------------
      * MÔ TẢ    :
      *
-     * Đọc dữ liệu trong [error], biên dịch và hiển thị ra màn hình
+     * Đọc dữ liệu trong [error], biên dịch và hiển thị ra màn hình thành chuối String.
      * ################################################################################################
      */
     errorCompile = [
@@ -1657,8 +1657,6 @@ export class AddComponent implements OnInit {
         }
         return result
     }
-
-
 
 }
 
