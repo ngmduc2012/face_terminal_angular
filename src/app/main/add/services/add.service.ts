@@ -23,11 +23,18 @@ export class AddService {
 
     //FormData Không phải dạng JSON => bỏ "Content-Type": "application/json",
     private optionFile = {
-        headers: {},
+        headers: {
+            Authorization: "NjA1OTczMjVjOTAzYTM5ZmJiYmUwMWJlOmMwNGFhOTIwMzg3YTgzMzQ1OGVmMzU3OTUzYjg2NjVlOTFlNzJjMzFjNTYyNjBkNTA2MmY5ZmQxZTAxY2ZlYmE=",
+        },
     };
 
     // input data in body field to post in api - Sử dụng Params
     public postData(body): Observable<any> {
         return this._httpClient.post<any>(`${environment.apiUrl}/v1/user`, body, this.optionFile)
+    }
+
+    // input data in body field to post in api - Sử dụng Params
+    public checkQuality(body): Observable<any> {
+        return this._httpClient.post<any>(`${environment.apiServer}/api/face-image-quality/check`, body, this.optionFile)
     }
 }

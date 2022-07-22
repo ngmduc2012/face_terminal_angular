@@ -7,6 +7,7 @@ export const environment = {
   hmr: false,
   apiUrl: 'http://192.168.1.166:8080',
   ws: 'ws://192.168.1.166:8080',
+  apiServer: 'http://10.0.8.13:33000'
 };
 
 /*
